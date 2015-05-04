@@ -9,7 +9,7 @@ means.
 For more information, please refer to <http://unlicense.org/>
 */
 
-package com.android.imageLoaderUtil;
+package com.litijun.photochooser.utils;
 
 import android.annotation.TargetApi;
 import android.os.Build;

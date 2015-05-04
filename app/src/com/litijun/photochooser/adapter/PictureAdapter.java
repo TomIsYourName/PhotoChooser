@@ -15,10 +15,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.imageLoaderUtil.DebugLog;
-import com.android.imageLoaderUtil.ImageLoaderUtil;
 import com.litijun.photochooser.adapter.vo.ImageItem;
 import com.litijun.photochooser.manager.ImageLoaderMgr;
+import com.litijun.photochooser.utils.DebugLog;
+import com.litijun.photochooser.utils.ImageLoaderUtil;
 import com.litijun.photochooser.utils.Utils;
 import com.litijun.photochooser.R;
 import com.nostra13.universalimageloader.core.ImageLoader;

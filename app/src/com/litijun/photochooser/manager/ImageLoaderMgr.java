@@ -1,17 +1,16 @@
 package com.litijun.photochooser.manager;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import android.content.Context;
 import android.widget.ImageView;
 
-import com.android.imageLoaderUtil.DebugLog;
-import com.android.imageLoaderUtil.ImageLoaderUtil;
 import com.litijun.photochooser.R;
 import com.litijun.photochooser.adapter.vo.ImageItem;
+import com.litijun.photochooser.utils.ImageLoaderUtil;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.download.ImageDownloader.Scheme;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class ImageLoaderMgr {
 	

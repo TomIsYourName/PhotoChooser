@@ -1,4 +1,4 @@
-package com.android.imageLoaderUtil;
+package com.litijun.photochooser.utils;
 
 import java.util.Locale;
 import android.annotation.TargetApi;

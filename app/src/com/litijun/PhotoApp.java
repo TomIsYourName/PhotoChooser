@@ -1,9 +1,9 @@
-package com.android.application;
+package com.litijun;
 
 import android.app.Application;
 import android.content.Context;
 
-import com.android.imageLoaderUtil.ImageLoaderUtil;
+import com.litijun.photochooser.utils.ImageLoaderUtil;
 
 public class PhotoApp extends Application {
 

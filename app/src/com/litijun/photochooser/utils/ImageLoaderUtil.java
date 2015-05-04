@@ -1,4 +1,4 @@
-package com.android.imageLoaderUtil;
+package com.litijun.photochooser.utils;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -22,15 +22,26 @@ public class ImageLoaderUtil {
 	
 	private ImageLoaderUtil(Context context){
 		
+//		ImageLoaderConfiguration configuration = new ImageLoaderConfiguration.Builder(this)
+//        .memoryCacheExtraOptions(DisplayUtils.getScreenWidth(this), DisplayUtils.getScreenHeight(this)) // default = device screen dimensions
+//        .threadPoolSize(4) // default
+//        .threadPriority(Thread.NORM_PRIORITY - 2) // default
+//        .memoryCache(new LruMemoryCache(15 * 1024 * 1024))
+//        .memoryCacheSize(20 * 1024 * 1024)
+//        .tasksProcessingOrder(QueueProcessingType.LIFO)
+//        .defaultDisplayImageOptions(displayOptions)
+//        .writeDebugLogs()
+//        .build();
+		
 		ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(context)
 	        .memoryCacheExtraOptions(480, 800) // default = device screen dimensions
 	        .diskCacheExtraOptions(480, 800, null)
-	        .threadPoolSize(3) // default
-	        .threadPriority(Thread.NORM_PRIORITY - 1) // default
-	        .tasksProcessingOrder(QueueProcessingType.FIFO) // default
+	        .threadPoolSize(4) // default
+	        .threadPriority(Thread.NORM_PRIORITY - 2) // default
+	        .tasksProcessingOrder(QueueProcessingType.LIFO) // default
 	        .denyCacheImageMultipleSizesInMemory()
-	        .memoryCache(new LruMemoryCache(2 * 1024 * 1024))
-	        .memoryCacheSize(2 * 1024 * 1024)
+	        .memoryCache(new LruMemoryCache(15 * 1024 * 1024))
+	        .memoryCacheSize(20 * 1024 * 1024)
 	        .memoryCacheSizePercentage(13) // default
 	        .diskCache(new UnlimitedDiscCache(AppFileManager.getInstance(context).createFileDir("imgCache"))) 
 	        .diskCacheFileNameGenerator(new HashCodeFileNameGenerator()) // default
@@ -90,7 +101,7 @@ public class ImageLoaderUtil {
 			.resetViewBeforeLoading(true)//
 			.cacheOnDisk(true)//
 			.cacheInMemory(true)//
-			.imageScaleType(ImageScaleType.EXACTLY_STRETCHED)//
+			.imageScaleType(ImageScaleType.EXACTLY)//EXACTLY_STRETCHED
 			.bitmapConfig(Bitmap.Config.RGB_565)//
 			.considerExifParams(true)//
 			.build();

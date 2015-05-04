@@ -13,10 +13,10 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.android.imageLoaderUtil.DebugLog;
 import com.litijun.photochooser.R;
 import com.litijun.photochooser.adapter.vo.AlbumItem;
 import com.litijun.photochooser.manager.ImageLoaderMgr;
+import com.litijun.photochooser.utils.DebugLog;
 
 public class AlbumAdapter extends BaseAdapter {
 	private Context					context;
