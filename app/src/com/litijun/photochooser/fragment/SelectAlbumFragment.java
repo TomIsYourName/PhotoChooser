@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ListView;
@@ -81,6 +82,14 @@ public class SelectAlbumFragment extends Fragment implements LoaderManager.Loade
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 showOrHideList();
+            }
+        });
+
+        getView().findViewById(R.id.btn_preview).setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                ((ChooseImageActivity) getActivity()).showPreview();
             }
         });
     }

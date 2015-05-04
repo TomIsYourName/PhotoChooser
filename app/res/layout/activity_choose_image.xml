@@ -65,4 +65,8 @@
         android:layout_below="@+id/choose_image_header"
         tools:layout="@layout/fragment_select_album" />
 
+    <RelativeLayout android:id="@+id/preview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
 </RelativeLayout>

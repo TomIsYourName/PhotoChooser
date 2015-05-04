@@ -23,7 +23,7 @@
         android:background="#DF333333" >
 
         <Button
-            android:id="@+id/image_preview"
+            android:id="@+id/btn_preview"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"

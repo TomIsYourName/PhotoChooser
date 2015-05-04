@@ -18,9 +18,11 @@ import com.litijun.photochooser.adapter.PictureAdapter;
 import com.litijun.photochooser.adapter.vo.AlbumItem;
 import com.litijun.photochooser.adapter.vo.ImageItem;
 import com.litijun.photochooser.consts.LoadeImageConsts;
+import com.litijun.photochooser.fragment.PreviewFragment;
 import com.litijun.photochooser.fragment.SelectAlbumFragment;
 import com.litijun.photochooser.manager.ImageLoaderMgr;
-//import com.litijun.photochooser.R;
+
+import java.util.List;
 
 
 public class ChooseImageActivity extends FragmentActivity implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -88,7 +90,6 @@ public class ChooseImageActivity extends FragmentActivity implements LoaderManag
         });
     }
 
-
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         String selection = null;
@@ -124,5 +125,13 @@ public class ChooseImageActivity extends FragmentActivity implements LoaderManag
             adapter.getLoadCursor().close();
             adapter.setLoadCursor(null);
         }
+    }
+
+    public void showPreview() {
+        getSupportFragmentManager().beginTransaction().replace(R.id.preview, new PreviewFragment()).commit();
+    }
+
+    public List<String> getSelectedPhotos() {
+        return adapter.getSelectedImage();
     }
 }

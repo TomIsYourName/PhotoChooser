@@ -23,7 +23,7 @@ android {
 	
 	signingConfigs {
         debug {
-            storeFile file("/Users/Emerson/.android/debug.keystore")
+            storeFile file("debug.keystore")
         }
 
         myConfig {

@@ -23,7 +23,9 @@ import com.litijun.photochooser.utils.Utils;
 import com.litijun.photochooser.R;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class PictureAdapter extends BaseAdapter {
@@ -36,6 +38,7 @@ public class PictureAdapter extends BaseAdapter {
     private RelativeLayout.LayoutParams params;
     private Cursor loadCursor;
     private ImageLoaderMgr loaderManager;
+    private List<String> selectedImagePath = new ArrayList<String>();
 
     public PictureAdapter(Activity activity) {
         inflater = activity.getLayoutInflater();
@@ -56,12 +59,15 @@ public class PictureAdapter extends BaseAdapter {
                 if (!holder.checkBox.isChecked()) {
                     holder.checkBox.setChecked(false);
                     loaderManager.removeSelect(holder.imageItem);
+                    selectedImagePath.remove(holder.imageItem.realPath);
                 } else {
                     if (!loaderManager.addSelect(holder.imageItem)) {
                         holder.checkBox.setChecked(false);
+                        selectedImagePath.remove(holder.imageItem.realPath);
                         Toast.makeText(context, String.format("您最多只能选择%d张图片", loaderManager.getMaxSelectSize()), Toast.LENGTH_LONG).show();
                     } else {
                         holder.checkBox.setChecked(true);
+                        if(!selectedImagePath.contains(holder.imageItem.realPath)) selectedImagePath.add(holder.imageItem.realPath);
                     }
                 }
             }
@@ -131,9 +137,7 @@ public class PictureAdapter extends BaseAdapter {
                 holder.textView.setText(item.name);
                 holder.checkBox.setChecked(loaderManager.getImageItem(item.id) != null && loaderManager.getSelectCount() <= loaderManager.getMaxSelectSize());
                 holder.checkBox.setVisibility(View.VISIBLE);
-                
-                //ImageLoaderMgr.getInstance(context).dispalyThumnailImage(item.id, holder.imageView);
-                
+
                 ImageLoaderMgr.getInstance(context).dispalyImage(item.realPath, holder.imageView);
                 
             }
@@ -149,6 +153,10 @@ public class PictureAdapter extends BaseAdapter {
 
     public Cursor getLoadCursor() {
         return loadCursor;
+    }
+
+    public List<String> getSelectedImage() {
+        return selectedImagePath;
     }
 
     class ViewHolder {
