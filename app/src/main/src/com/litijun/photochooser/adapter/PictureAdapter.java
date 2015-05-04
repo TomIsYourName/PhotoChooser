@@ -15,10 +15,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.imageLoaderUtil.DebugLog;
+import com.android.imageLoaderUtil.ImageLoaderUtil;
 import com.litijun.photochooser.adapter.vo.ImageItem;
-import com.litijun.photochooser.manager.ImageLoaderManager;
+import com.litijun.photochooser.manager.ImageLoaderMgr;
 import com.litijun.photochooser.utils.Utils;
 import com.litijun.photochooser.R;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,13 +35,13 @@ public class PictureAdapter extends BaseAdapter {
     private Context context;
     private RelativeLayout.LayoutParams params;
     private Cursor loadCursor;
-    private ImageLoaderManager loaderManager;
+    private ImageLoaderMgr loaderManager;
 
     public PictureAdapter(Activity activity) {
         inflater = activity.getLayoutInflater();
         dataMap = new HashMap<Integer, ImageItem>();
         context = activity;
-        loaderManager = ImageLoaderManager.getInstance(context);
+        loaderManager = ImageLoaderMgr.getInstance(context);
 
         // 计算每个项的高度：高度=宽度
         int[] point = new int[2];
@@ -128,7 +131,11 @@ public class PictureAdapter extends BaseAdapter {
                 holder.textView.setText(item.name);
                 holder.checkBox.setChecked(loaderManager.getImageItem(item.id) != null && loaderManager.getSelectCount() <= loaderManager.getMaxSelectSize());
                 holder.checkBox.setVisibility(View.VISIBLE);
-                ImageLoaderManager.getInstance(context).dispalyThumnailImage(item.id, holder.imageView);
+                
+                //ImageLoaderMgr.getInstance(context).dispalyThumnailImage(item.id, holder.imageView);
+                
+                ImageLoaderMgr.getInstance(context).dispalyImage(item.realPath, holder.imageView);
+                
             }
         }
         return convertView;

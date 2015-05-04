@@ -19,7 +19,7 @@ import com.litijun.photochooser.adapter.vo.AlbumItem;
 import com.litijun.photochooser.adapter.vo.ImageItem;
 import com.litijun.photochooser.consts.LoadeImageConsts;
 import com.litijun.photochooser.fragment.SelectAlbumFragment;
-import com.litijun.photochooser.manager.ImageLoaderManager;
+import com.litijun.photochooser.manager.ImageLoaderMgr;
 //import com.litijun.photochooser.R;
 
 
@@ -39,7 +39,7 @@ public class ChooseImageActivity extends FragmentActivity implements LoaderManag
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_image);
-        ImageLoaderManager.getInstance(this).setMaxSelectSize(6);
+        ImageLoaderMgr.getInstance(this).setMaxSelectSize(6);
 
         gridView = (GridView) findViewById(R.id.choose_image_gridview);
         adapter = new PictureAdapter(this);

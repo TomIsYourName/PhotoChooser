@@ -5,8 +5,8 @@
 
     <ImageView
         android:id="@+id/alumb_picture"
-        android:layout_width="72dp"
-        android:layout_height="78dp"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
         android:layout_margin="6dp"
         android:src="@drawable/ic_launcher" />
 
@@ -42,6 +42,7 @@
         android:layout_centerVertical="true"
         android:layout_marginRight="20dp"
         android:visibility="gone"
+        android:scaleType="centerCrop"
         android:src="@drawable/curr_flag" />
 
     <View

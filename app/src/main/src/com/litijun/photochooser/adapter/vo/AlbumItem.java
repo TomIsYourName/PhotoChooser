@@ -6,4 +6,5 @@ public class AlbumItem {
     public int firstImageId;
     public String albumName;
     public int imageCount;
+    public String firstImagePath;
 }
