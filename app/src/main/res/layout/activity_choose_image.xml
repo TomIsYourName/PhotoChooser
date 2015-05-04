@@ -2,18 +2,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MyActivity">
+    tools:context=".MyActivity" >
 
     <RelativeLayout
         android:id="@+id/choose_image_header"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="#FFFF33">
+        android:layout_height="48dp"
+        android:background="@color/app_style_color" >
 
         <Button
             android:id="@+id/header_back"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="35dp"
+            android:layout_centerVertical="true"
             android:paddingLeft="15dp"
             android:paddingRight="15dp"
             android:text="返回"
@@ -28,8 +29,13 @@
         <Button
             android:id="@+id/header_right_button"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:textColor="#FFFFFF" />
+            android:layout_height="35dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:textColor="#FFFFFF"
+            android:visibility="gone" />
     </RelativeLayout>
 
     <GridView
@@ -45,7 +51,8 @@
         android:numColumns="3"
         android:scrollbars="none"
         android:stretchMode="columnWidth"
-        android:verticalSpacing="@dimen/gridview_space_size"></GridView>
+        android:verticalSpacing="@dimen/gridview_space_size" >
+    </GridView>
 
     <fragment
         android:id="@+id/choose_image_album"

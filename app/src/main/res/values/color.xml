@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources> 
+    
+    <!-- app 整体效果颜色 -->
+    <color name="app_style_color">#45C01A</color>
+    <color name="app_content_color">#ECF0F1</color>
+    <color name="dialog_btn_color">#0278fe</color>
+
+</resources>
