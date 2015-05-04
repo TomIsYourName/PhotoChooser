@@ -25,3 +25,9 @@ proguard/
 
 # Log Files
 *.log
+
+#IDE local settings file
+.idea
+*.idea
+.idea/
+.idea/*
