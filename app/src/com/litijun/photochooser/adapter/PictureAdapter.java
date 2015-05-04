@@ -73,7 +73,7 @@ public class PictureAdapter extends BaseAdapter {
         if (loadCursor == null) {
             return 0;
         }
-        return loadCursor.getCount();
+        return loadCursor.getCount()+1;
     }
 
     @Override

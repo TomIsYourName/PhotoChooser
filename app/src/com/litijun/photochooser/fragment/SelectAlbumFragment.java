@@ -19,10 +19,10 @@ import android.widget.CompoundButton;
 import android.widget.ListView;
 
 import com.litijun.photochooser.ChooseImageActivity;
+import com.litijun.photochooser.R;
 import com.litijun.photochooser.adapter.AlbumAdapter;
 import com.litijun.photochooser.adapter.vo.AlbumItem;
 import com.litijun.photochooser.consts.LoadeImageConsts;
-import com.litijun.photochooser.R;
 
 public class SelectAlbumFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
     private static final String[] LOADING_COLUMN = {

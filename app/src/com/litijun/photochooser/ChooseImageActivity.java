@@ -97,7 +97,8 @@ public class ChooseImageActivity extends FragmentActivity implements LoaderManag
             selection = "bucket_id=?";
             selectionArgs = new String[]{"" + id};
         }
-        return new CursorLoader(this, MediaStore.Images.Media.EXTERNAL_CONTENT_URI, LOADING_COLUMN, selection, selectionArgs, MediaStore.Images.Media.DEFAULT_SORT_ORDER);
+        String orderBy = MediaStore.Images.Media.DATE_TAKEN + " DESC";//MediaStore.Images.Media._ID + " ASC";
+        return new CursorLoader(this, MediaStore.Images.Media.EXTERNAL_CONTENT_URI, LOADING_COLUMN, selection, selectionArgs, orderBy);
     }
 
     @Override
