@@ -18,122 +18,133 @@ import android.widget.Toast;
 import com.litijun.photochooser.adapter.PictureAdapter;
 import com.litijun.photochooser.adapter.vo.AlbumItem;
 import com.litijun.photochooser.adapter.vo.ImageItem;
-import com.litijun.photochooser.consts.LoadeImageConsts;
 import com.litijun.photochooser.fragment.PreviewFragment;
 import com.litijun.photochooser.fragment.SelectAlbumFragment;
 import com.litijun.photochooser.manager.ImageLoaderMgr;
-
+import com.litijun.photochooser.utils.DebugLog;
+import com.litijun.photochooser.utils.LoadeImageConsts;
+import com.litijun.photochooser.utils.Utils;
 
 public class ChooseImageActivity extends FragmentActivity implements LoaderManager.LoaderCallbacks<Cursor> {
-    public static final String[] LOADING_COLUMN = {MediaStore.Images.ImageColumns._ID, // ID “559497”
-            MediaStore.Images.Media.DATA,// “/storage/emulated/0/DCIM/Camera/IMG_20141206_203606.jpg”
-            MediaStore.Images.ImageColumns.DISPLAY_NAME,// 图片名称 “IMG_20141206_203606.jpg”
-            MediaStore.Images.Media.BUCKET_ID, // dir id 目录
-    };
-    private Integer albumId;
+	public static final String[]	LOADING_COLUMN	= { MediaStore.Images.ImageColumns._ID,//
+			MediaStore.Images.Media.DATA, //
+			MediaStore.Images.ImageColumns.DISPLAY_NAME,//
+			MediaStore.Images.Media.BUCKET_ID,		};
+	private Integer					albumId;
 
-    private GridView gridView;
-    private PictureAdapter adapter;
-    private SelectAlbumFragment albumFragment;
+	private GridView				gridView;
+	private PictureAdapter			adapter;
+	private SelectAlbumFragment		albumFragment;
+	private Cursor cursor;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_choose_image);
-        ImageLoaderMgr.getInstance(this).setMaxSelectSize(6);
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_choose_image);
+		ImageLoaderMgr.getInstance(getApplication()).setMaxSelectSize(6);
+		ImageLoaderMgr.getInstance(getApplication()).setTakePhoto(true);
+		gridView = (GridView) findViewById(R.id.choose_image_gridview);
+		adapter = new PictureAdapter(this);
+		albumFragment = (SelectAlbumFragment) getSupportFragmentManager().findFragmentById(R.id.choose_image_album);
+		refreshGridViewByAlbumId(LoadeImageConsts.LOADER_IMAGE_CURSOR);
+		gridView.setAdapter(adapter);
+		gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				if (position == 0 && ImageLoaderMgr.getInstance(getApplication()).isTakePhoto()) {
+					Toast.makeText(ChooseImageActivity.this, "拍照", Toast.LENGTH_LONG).show();
+				}
+				else {
+					ImageItem item = adapter.getItem(position);
+					Fragment fragment = new PreviewFragment();
+					Bundle args = new Bundle();
+					args.putInt("offset", ImageLoaderMgr.getInstance(getApplication()).isTakePhoto() ? position - 1 : position);
+					args.putBoolean("show_all", true);
+					args.putSerializable("ImageItem", item);
+					fragment.setArguments(args);
+					getSupportFragmentManager().beginTransaction().replace(R.id.preview, fragment).commit();
+				}
+			}
+		});
 
-        gridView = (GridView) findViewById(R.id.choose_image_gridview);
-        adapter = new PictureAdapter(this);
-        albumFragment = (SelectAlbumFragment) getSupportFragmentManager().findFragmentById(R.id.choose_image_album);
-        refreshGridViewByAlbumId(LoadeImageConsts.LOADER_IMAGE_CURSOR);
-        gridView.setAdapter(adapter);
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (position == 0) {
-                    Toast.makeText(ChooseImageActivity.this, "拍照", Toast.LENGTH_LONG).show();
-                } else {
-                    ImageItem item = adapter.getItem(position - 1);
-                    Toast.makeText(ChooseImageActivity.this, item.name, Toast.LENGTH_LONG).show();
-                    Fragment fragment = new PreviewFragment();
-                    Bundle args = new Bundle();
-                    args.putInt("offset", position-1);
-                    args.putBoolean("show_all", true);
-                    fragment.setArguments(args);
-                    getSupportFragmentManager().beginTransaction().replace(R.id.preview, fragment).commit();
-                }
-            }
-        });
+		initHeader();
 
-        initHeader();
+	}
 
-    }
+	public void refreshGridViewByAlbumId(int id) {
+		DebugLog.d("album id = " + id);
+		this.albumId = id;
+		getSupportLoaderManager().initLoader(id, null, this);
+	}
 
-    public void refreshGridViewByAlbumId(int id) {
-        this.albumId = id;
-        getSupportLoaderManager().initLoader(id, null, this);
-    }
+	private void initHeader() {
+		Button backButton = (Button) findViewById(R.id.header_back);
+		backButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				finish();
+			}
+		});
 
-    private void initHeader() {
-        Button backButton = (Button) findViewById(R.id.header_back);
-        backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+		TextView titleView = (TextView) findViewById(R.id.header_title);
+		titleView.setText("选择图片");
 
-        TextView titleView = (TextView) findViewById(R.id.header_title);
-        titleView.setText("选择图片");
+		Button confirmButton = (Button) findViewById(R.id.header_right_button);
+		confirmButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				// todo confirm
+			}
+		});
+	}
 
-        Button confirmButton = (Button) findViewById(R.id.header_right_button);
-        confirmButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // todo confirm
-            }
-        });
-    }
+	@Override
+	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+		DebugLog.d("album id = " + id);
+		String selection = null;
+		String[] selectionArgs = null;
+		if (albumId != null && albumId != 1) {
+			selection = "bucket_id=?";
+			selectionArgs = new String[] { "" + id };
+		}
+		String orderBy = MediaStore.Images.Media.DATE_TAKEN + " DESC";//MediaStore.Images.Media._ID + " ASC";
+		return new CursorLoader(this, MediaStore.Images.Media.EXTERNAL_CONTENT_URI, LOADING_COLUMN, selection, selectionArgs, orderBy);
+	}
 
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        String selection = null;
-        String[] selectionArgs = null;
-        if (albumId != null && albumId < 0) {
-            selection = "bucket_id=?";
-            selectionArgs = new String[]{"" + id};
-        }
-        String orderBy = MediaStore.Images.Media.DATE_TAKEN + " DESC";//MediaStore.Images.Media._ID + " ASC";
-        return new CursorLoader(this, MediaStore.Images.Media.EXTERNAL_CONTENT_URI, LOADING_COLUMN, selection, selectionArgs, orderBy);
-    }
+	@Override
+	public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+		// 第一次默认取全部图片，所以相册第一项为所有图片
+		if (loader.getId() == LoadeImageConsts.LOADER_IMAGE_CURSOR) {
+			AlbumItem item = new AlbumItem();
+			cursor.moveToPosition(0);
+			item.firstImageId = cursor.getInt(cursor.getColumnIndex(MediaStore.Images.Media._ID));
+			item.firstImagePath = Utils.getImagePath(getApplication(), item.firstImageId);
+			item.id = loader.getId();
+			item.imageCount = cursor.getCount();
+			item.albumName = getString(R.string.all_photos);
+			albumFragment.setFirstItem(item);
+			adapter.setLoadCursor(cursor);
+		}
+		else {
+			adapter.setLoadCursor(cursor);
+		}
+		this.cursor = cursor;
+	}
 
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-        // 第一次默认取全部图片，所以相册第一项为所有图片
-        if (loader.getId() == LoadeImageConsts.LOADER_IMAGE_CURSOR) {
-            AlbumItem item = new AlbumItem();
-            item.id = loader.getId();
-            item.imageCount = cursor.getCount();
-            item.albumName = "所有图片";
-            cursor.moveToFirst();
-            item.firstImageId = cursor.getInt(cursor.getColumnIndex(MediaStore.Images.Media._ID));
-            albumFragment.setFirstItem(item);
-            adapter.setLoadCursor(cursor);
-        } else {
-            adapter.setLoadCursor(cursor);
-        }
-    }
+	@Override
+	public void onLoaderReset(Loader<Cursor> loader) {
+		if (this.cursor != null && !this.cursor.isClosed()) {
+			this.cursor.close();
+		}
+	}
 
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-        if (adapter.getLoadCursor() != null) {
-            adapter.getLoadCursor().close();
-            adapter.setLoadCursor(null);
-        }
-    }
+	@Override
+	public void onBackPressed() {
+		super.onBackPressed();
+	}
 
-    public void showPreview() {
-        getSupportFragmentManager().beginTransaction().replace(R.id.preview, new PreviewFragment()).commit();
-    }
+	public void showPreview() {
+		getSupportFragmentManager().beginTransaction().replace(R.id.preview, new PreviewFragment()).commit();
+	}
 
 }

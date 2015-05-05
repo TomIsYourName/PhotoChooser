@@ -35,11 +35,19 @@ public class PreviewFragment extends Fragment implements View.OnClickListener, V
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Bundle args = getArguments();
-        int offset = args == null ? 0 : args.getInt("offset", 0);
-        //boolean showAll = args == null ? false : args.getBoolean("show_all", false);
         vp_preview = (LoopViewPager) getView().findViewById(R.id.vp_preview);
-        List<ImageItem> data = ImageLoaderMgr.getInstance(getActivity()).getSeletectList();
+        int offset = args == null ? 0 : args.getInt("offset", 0);
+        boolean showAll = args == null ? false : args.getBoolean("show_all", false);
+        List<ImageItem> data = null;
+        if(showAll){
+            data = ImageLoaderMgr.getInstance(getActivity()).getAllImageList();
+        }else{
+            data = ImageLoaderMgr.getInstance(getActivity()).getSeletectList();
+        }
         vp_preview.setAdapter(new PreviewAdapter(getActivity(), data, offset));
+
+//        if(data!=null && data.size()<=1){
+//        }
         vp_preview.setOnPageChangeListener(this);
         initVPAnim();
     }

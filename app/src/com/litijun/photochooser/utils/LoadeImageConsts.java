@@ -1,4 +1,4 @@
-package com.litijun.photochooser.consts;
+package com.litijun.photochooser.utils;
 
 
 public class LoadeImageConsts {
