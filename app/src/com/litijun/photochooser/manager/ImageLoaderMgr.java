@@ -5,30 +5,29 @@ import android.widget.ImageView;
 
 import com.litijun.photochooser.R;
 import com.litijun.photochooser.adapter.vo.ImageItem;
+import com.litijun.photochooser.utils.DebugLog;
 import com.litijun.photochooser.utils.ImageLoaderUtil;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.download.ImageDownloader.Scheme;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ImageLoaderMgr {
-	
-	enum ImageLoadType {
+
+    enum ImageLoadType {
         LOADING_TYPE_BIGIMAGE, LOADING_TYPE_THUMBNAILIMAGE
     }
-	
+
     private static ImageLoaderMgr instance;
     private Context context;
-    private ImageLoader thumbnailImageLoader;
-    private ImageLoader realImageLoader;
     private Map<Integer, ImageItem> imageItemMap;
     private int maxSelectSize;
 
     private ImageLoaderMgr(Context context) {
         this.context = context;
-//        this.thumbnailImageLoader = new ImageLoader(context, ImageLoader.ImageLoadType.LOADING_TYPE_THUMBNAILIMAGE);
-//        this.realImageLoader = new ImageLoader(context, ImageLoader.ImageLoadType.LOADING_TYPE_BIGIMAGE);
         this.maxSelectSize = 0;
         this.imageItemMap = new HashMap<Integer, ImageItem>(maxSelectSize);
     }
@@ -50,6 +49,24 @@ public class ImageLoaderMgr {
 
     public int getSelectCount() {
         return imageItemMap.size();
+    }
+
+    public Map<Integer, ImageItem> getImageItemMap() {
+        return imageItemMap;
+    }
+
+    public List<ImageItem> getSeletectList(){
+        List<ImageItem> data = new ArrayList<ImageItem>();
+        Map<Integer, ImageItem> imageItemMap = ImageLoaderMgr.getInstance(context).getImageItemMap();
+        DebugLog.v("imageItemMap.size() = " + imageItemMap.size());
+        for (Map.Entry<Integer, ImageItem> entry : imageItemMap.entrySet()) {
+            Integer key = entry.getKey();
+            ImageItem value = entry.getValue();
+            if(value != null && value instanceof  ImageItem  ){
+                data.add((ImageItem) value);
+            }
+        }
+        return data;
     }
 
     public boolean addSelect(ImageItem item) {
@@ -74,40 +91,9 @@ public class ImageLoaderMgr {
         return imageItemMap.get(key);
     }
 
-    public void dispalyThumnailImage(Integer uri, final ImageView imageView) {
-        imageView.setImageResource(R.drawable.image_loading_default);
-//        thumbnailImageLoader.loadingImage(uri, new ImageLoader.LoadedCallBack() {
-//            @Override
-//            public void startLoad() {
-//
-//            }
-//
-//            @Override
-//            public void imageLoaded(Bitmap bigBitmap, Bitmap thumbnailBitmap) {
-//                imageView.setImageBitmap(thumbnailBitmap);
-//            }
-//        });
-    }
 
-    public void dispalyRealImage(Integer uri, final ImageView imageView) {
-        imageView.setImageResource(R.drawable.image_loading_default);
-//        realImageLoader.loadingImage(uri, new ImageLoader.LoadedCallBack() {
-//            @Override
-//            public void startLoad() {
-//
-//            }
-//
-//            @Override
-//            public void imageLoaded(Bitmap bigBitmap, Bitmap thumbnailBitmap) {
-//                imageView.setImageBitmap(thumbnailBitmap);
-//            }
-//        });
-        
-    }
-    
     public void dispalyImage(String picPath, final ImageView imageView) {
-//    	DebugLog.d(picPath);
-    	ImageLoader.getInstance().displayImage(Scheme.FILE.wrap(picPath), imageView,
-    			ImageLoaderUtil.getInstance(context).createNoRoundedOptions(R.drawable.image_loading_default));
+        ImageLoader.getInstance().displayImage(Scheme.FILE.wrap(picPath), imageView,
+                ImageLoaderUtil.getInstance(context).createNoRoundedOptions(R.drawable.image_loading_default));
     }
 }

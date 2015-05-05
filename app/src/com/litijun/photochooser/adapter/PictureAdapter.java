@@ -15,17 +15,12 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.litijun.photochooser.R;
 import com.litijun.photochooser.adapter.vo.ImageItem;
 import com.litijun.photochooser.manager.ImageLoaderMgr;
-import com.litijun.photochooser.utils.DebugLog;
-import com.litijun.photochooser.utils.ImageLoaderUtil;
 import com.litijun.photochooser.utils.Utils;
-import com.litijun.photochooser.R;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class PictureAdapter extends BaseAdapter {
@@ -38,7 +33,6 @@ public class PictureAdapter extends BaseAdapter {
     private RelativeLayout.LayoutParams params;
     private Cursor loadCursor;
     private ImageLoaderMgr loaderManager;
-    private List<String> selectedImagePath = new ArrayList<String>();
 
     public PictureAdapter(Activity activity) {
         inflater = activity.getLayoutInflater();
@@ -59,15 +53,12 @@ public class PictureAdapter extends BaseAdapter {
                 if (!holder.checkBox.isChecked()) {
                     holder.checkBox.setChecked(false);
                     loaderManager.removeSelect(holder.imageItem);
-                    selectedImagePath.remove(holder.imageItem.realPath);
                 } else {
                     if (!loaderManager.addSelect(holder.imageItem)) {
                         holder.checkBox.setChecked(false);
-                        selectedImagePath.remove(holder.imageItem.realPath);
                         Toast.makeText(context, String.format("您最多只能选择%d张图片", loaderManager.getMaxSelectSize()), Toast.LENGTH_LONG).show();
                     } else {
                         holder.checkBox.setChecked(true);
-                        if(!selectedImagePath.contains(holder.imageItem.realPath)) selectedImagePath.add(holder.imageItem.realPath);
                     }
                 }
             }
@@ -79,7 +70,7 @@ public class PictureAdapter extends BaseAdapter {
         if (loadCursor == null) {
             return 0;
         }
-        return loadCursor.getCount()+1;
+        return loadCursor.getCount() + 1;
     }
 
     @Override
@@ -139,7 +130,7 @@ public class PictureAdapter extends BaseAdapter {
                 holder.checkBox.setVisibility(View.VISIBLE);
 
                 ImageLoaderMgr.getInstance(context).dispalyImage(item.realPath, holder.imageView);
-                
+
             }
         }
         return convertView;
@@ -155,15 +146,11 @@ public class PictureAdapter extends BaseAdapter {
         return loadCursor;
     }
 
-    public List<String> getSelectedImage() {
-        return selectedImagePath;
-    }
 
     class ViewHolder {
         ImageItem imageItem;
         ImageView imageView;
         CheckBox checkBox;
-
         TextView textView;
     }
 }

@@ -23,8 +23,6 @@ import com.litijun.photochooser.fragment.PreviewFragment;
 import com.litijun.photochooser.fragment.SelectAlbumFragment;
 import com.litijun.photochooser.manager.ImageLoaderMgr;
 
-import java.util.List;
-
 
 public class ChooseImageActivity extends FragmentActivity implements LoaderManager.LoaderCallbacks<Cursor> {
     public static final String[] LOADING_COLUMN = {MediaStore.Images.ImageColumns._ID, // ID “559497”
@@ -138,12 +136,4 @@ public class ChooseImageActivity extends FragmentActivity implements LoaderManag
         getSupportFragmentManager().beginTransaction().replace(R.id.preview, new PreviewFragment()).commit();
     }
 
-    public List<String> getSelectedPhotos() {
-        return adapter.getSelectedImage();
-    }
-
-    public List<String> getAllPhotos() {
-        //@ TODO return all photos
-        return adapter.getSelectedImage();
-    }
 }

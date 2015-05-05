@@ -8,7 +8,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.litijun.photochooser.R;
+import com.litijun.photochooser.adapter.vo.ImageItem;
 import com.litijun.photochooser.manager.ImageLoaderMgr;
+import com.litijun.photochooser.utils.DebugLog;
 
 import java.util.List;
 
@@ -18,13 +20,15 @@ import java.util.List;
 public class PreviewAdapter extends PagerAdapter{
 
     private Context mContext;
-    private List<String> data;
+    private List<ImageItem> data;
     private int offset = 0;
 
-    public PreviewAdapter(Context context, List<String> data, int offset) {
+    public PreviewAdapter(Context context, List<ImageItem> data, int offset) {
         this.mContext = context;
         this.data = data;
         this.offset = offset;
+
+
     }
 
     @Override
@@ -47,8 +51,10 @@ public class PreviewAdapter extends PagerAdapter{
         LayoutInflater inflater = LayoutInflater.from(mContext);
         View view = inflater.inflate(R.layout.item_preview, null);
         ImageView iv_preview = (ImageView) view.findViewById(R.id.iv_preview);
-        String path = getCount() > 0 ? data.get((position+offset) % getCount()) : "test";
-        ImageLoaderMgr.getInstance(mContext).dispalyImage(path, iv_preview);
+        String imgpath = getCount() > 0 ? data.get((position+offset) % getCount()).realPath : "";
+
+        DebugLog.i("(position+offset) = " + (position+offset) + "; imgPath = " + imgpath);
+        ImageLoaderMgr.getInstance(mContext).dispalyImage(imgpath, iv_preview);
         container.addView(view);
         return view;
     }

@@ -6,12 +6,18 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.Interpolator;
 
-import com.litijun.photochooser.ChooseImageActivity;
 import com.litijun.photochooser.R;
 import com.litijun.photochooser.adapter.PreviewAdapter;
+import com.litijun.photochooser.adapter.vo.ImageItem;
+import com.litijun.photochooser.manager.ImageLoaderMgr;
+import com.litijun.photochooser.widgets.DepthPageTransformer;
+import com.litijun.photochooser.widgets.FixedScroller;
 import com.litijun.photochooser.widgets.LoopViewPager;
 
+import java.lang.reflect.Field;
 import java.util.List;
 
 public class PreviewFragment extends Fragment implements View.OnClickListener, ViewPager.OnPageChangeListener {
@@ -30,13 +36,31 @@ public class PreviewFragment extends Fragment implements View.OnClickListener, V
         super.onViewCreated(view, savedInstanceState);
         Bundle args = getArguments();
         int offset = args == null ? 0 : args.getInt("offset", 0);
-        boolean showAll = args == null ? false : args.getBoolean("show_all", false);
+        //boolean showAll = args == null ? false : args.getBoolean("show_all", false);
         vp_preview = (LoopViewPager) getView().findViewById(R.id.vp_preview);
-        List<String> data = ((ChooseImageActivity) getActivity()).getSelectedPhotos();
-        if(showAll) data = ((ChooseImageActivity) getActivity()).getAllPhotos();
+        List<ImageItem> data = ImageLoaderMgr.getInstance(getActivity()).getSeletectList();
         vp_preview.setAdapter(new PreviewAdapter(getActivity(), data, offset));
         vp_preview.setOnPageChangeListener(this);
+        initVPAnim();
     }
+
+    private void initVPAnim() {
+        try {
+            Field mScroller;
+            mScroller = ViewPager.class.getDeclaredField("mScroller");
+            mScroller.setAccessible(true);
+            Interpolator sInterpolator = new AccelerateDecelerateInterpolator();
+            FixedScroller scroller = new FixedScroller(vp_preview.getContext(), sInterpolator);
+            mScroller.set(vp_preview, scroller);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        //vp_preview.setPageTransformer(true, new ZoomOutPageTransformer());
+        vp_preview.setPageTransformer(true, new DepthPageTransformer());
+
+    }
+
 
     @Override
     public void onClick(View v) {
