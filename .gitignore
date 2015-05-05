@@ -28,6 +28,9 @@ proguard/
 
 #IDE local settings file
 .idea
-*.idea
 .idea/
 .idea/*
+.idea/workspace.xml
+*.iml
+*.idea
+
