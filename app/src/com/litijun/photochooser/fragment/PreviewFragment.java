@@ -65,6 +65,8 @@ public class PreviewFragment extends Fragment implements View.OnClickListener, V
         vp_preview.setCurrentItem(offset);
         initVPAnim();
         changeSelectedCount();
+        setCheckStatus(offset);
+
     }
 
 
@@ -78,10 +80,13 @@ public class PreviewFragment extends Fragment implements View.OnClickListener, V
             header_right_button.setText("完成");
     }
 
-    public void setCheckStatus(ImageItem item){
-        ImageLoaderMgr imageLoaderMgr = ImageLoaderMgr.getInstance(getActivity());
-        preview_image_cb.setTag(item);
-        preview_image_cb.setChecked(imageLoaderMgr.getImageItem(item.id) != null && imageLoaderMgr.getSelectCount() <= imageLoaderMgr.getMaxSelectSize());
+    public void setCheckStatus(int position){
+        if(data!= null && data.size()>0){
+            ImageItem item = data.get(position);
+            ImageLoaderMgr imageLoaderMgr = ImageLoaderMgr.getInstance(getActivity());
+            preview_image_cb.setTag(item);
+            preview_image_cb.setChecked(imageLoaderMgr.getImageItem(item.id) != null && imageLoaderMgr.getSelectCount() <= imageLoaderMgr.getMaxSelectSize());
+        }
     }
 
     public void changeCheckStatus(ImageItem item){
@@ -148,7 +153,6 @@ public class PreviewFragment extends Fragment implements View.OnClickListener, V
     @Override
     public void onPageSelected(int pPosition) {
         DebugLog.d("Position = " + pPosition);
-        ImageItem item = data.get(pPosition);
-        setCheckStatus(item);
+        setCheckStatus(pPosition);
     }
 }

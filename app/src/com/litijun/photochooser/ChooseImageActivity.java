@@ -156,6 +156,7 @@ public class ChooseImageActivity extends FragmentActivity implements View.OnClic
 			ft.setCustomAnimations(R.anim.slide_up,R.anim.slide_down); 
 			ft.remove(previewFragment).commit();
 			previewFragment = null;
+			adapter.notifyDataSetChanged();
 			return;
 		}
 		super.onBackPressed();
