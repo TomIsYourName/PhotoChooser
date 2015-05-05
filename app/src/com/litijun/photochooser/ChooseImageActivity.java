@@ -157,6 +157,7 @@ public class ChooseImageActivity extends FragmentActivity implements View.OnClic
 			ft.remove(previewFragment).commit();
 			previewFragment = null;
 			adapter.notifyDataSetChanged();
+			changeSelectedCount();
 			return;
 		}
 		super.onBackPressed();
