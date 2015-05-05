@@ -35,7 +35,8 @@ public class ChooseImageActivity extends FragmentActivity implements LoaderManag
 	private GridView				gridView;
 	private PictureAdapter			adapter;
 	private SelectAlbumFragment		albumFragment;
-	private Cursor cursor;
+	private PreviewFragment			previewFragment;
+	private Cursor					cursor;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -56,13 +57,13 @@ public class ChooseImageActivity extends FragmentActivity implements LoaderManag
 				}
 				else {
 					ImageItem item = adapter.getItem(position);
-					Fragment fragment = new PreviewFragment();
+					previewFragment = new PreviewFragment();
 					Bundle args = new Bundle();
 					args.putInt("offset", ImageLoaderMgr.getInstance(getApplication()).isTakePhoto() ? position - 1 : position);
 					args.putBoolean("show_all", true);
 					args.putSerializable("ImageItem", item);
-					fragment.setArguments(args);
-					getSupportFragmentManager().beginTransaction().replace(R.id.preview, fragment).commit();
+					previewFragment.setArguments(args);
+					getSupportFragmentManager().beginTransaction().replace(R.id.preview, previewFragment).commit();
 				}
 			}
 		});
@@ -140,6 +141,11 @@ public class ChooseImageActivity extends FragmentActivity implements LoaderManag
 
 	@Override
 	public void onBackPressed() {
+		if(previewFragment != null){
+			getSupportFragmentManager().beginTransaction().remove(previewFragment).commit();
+			previewFragment = null;
+			return;
+		}
 		super.onBackPressed();
 	}
 
