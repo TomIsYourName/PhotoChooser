@@ -19,10 +19,12 @@ public class PreviewAdapter extends PagerAdapter{
 
     private Context mContext;
     private List<String> data;
+    private int offset = 0;
 
-    public PreviewAdapter(Context context, List<String> data) {
+    public PreviewAdapter(Context context, List<String> data, int offset) {
         this.mContext = context;
         this.data = data;
+        this.offset = offset;
     }
 
     @Override
@@ -45,7 +47,8 @@ public class PreviewAdapter extends PagerAdapter{
         LayoutInflater inflater = LayoutInflater.from(mContext);
         View view = inflater.inflate(R.layout.item_preview, null);
         ImageView iv_preview = (ImageView) view.findViewById(R.id.iv_preview);
-        ImageLoaderMgr.getInstance(mContext).dispalyImage(data.get(position), iv_preview);
+        String path = getCount() > 0 ? data.get((position+offset) % getCount()) : "test";
+        ImageLoaderMgr.getInstance(mContext).dispalyImage(path, iv_preview);
         container.addView(view);
         return view;
     }

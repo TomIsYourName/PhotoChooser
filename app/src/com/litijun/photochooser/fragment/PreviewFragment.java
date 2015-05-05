@@ -10,10 +10,13 @@ import android.view.ViewGroup;
 import com.litijun.photochooser.ChooseImageActivity;
 import com.litijun.photochooser.R;
 import com.litijun.photochooser.adapter.PreviewAdapter;
+import com.litijun.photochooser.widgets.LoopViewPager;
 
 import java.util.List;
 
-public class PreviewFragment extends Fragment implements View.OnClickListener {
+public class PreviewFragment extends Fragment implements View.OnClickListener, ViewPager.OnPageChangeListener {
+
+    private LoopViewPager vp_preview;
 
     public PreviewFragment(){}
 
@@ -25,13 +28,31 @@ public class PreviewFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ViewPager vp_preview = (ViewPager) getView().findViewById(R.id.vp_preview);
+        Bundle args = getArguments();
+        int offset = args == null ? 0 : args.getInt("offset", 0);
+        boolean showAll = args == null ? false : args.getBoolean("show_all", false);
+        vp_preview = (LoopViewPager) getView().findViewById(R.id.vp_preview);
         List<String> data = ((ChooseImageActivity) getActivity()).getSelectedPhotos();
-        vp_preview.setAdapter(new PreviewAdapter(getActivity(), data));
+        if(showAll) data = ((ChooseImageActivity) getActivity()).getAllPhotos();
+        vp_preview.setAdapter(new PreviewAdapter(getActivity(), data, offset));
+        vp_preview.setOnPageChangeListener(this);
     }
 
     @Override
     public void onClick(View v) {
 
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int pState) {
+    }
+
+    @Override
+    public void onPageScrolled(int arg0, float arg1, int arg2) {
+
+    }
+
+    @Override
+    public void onPageSelected(int pPosition) {
     }
 }

@@ -3,7 +3,7 @@
     android:layout_height="match_parent"
     android:clickable="false" >
 
-    <android.support.v4.view.ViewPager
+    <com.litijun.photochooser.widgets.LoopViewPager
         android:id="@+id/vp_preview"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

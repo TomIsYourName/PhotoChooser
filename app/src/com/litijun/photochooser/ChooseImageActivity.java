@@ -3,6 +3,7 @@ package com.litijun.photochooser;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -56,6 +57,12 @@ public class ChooseImageActivity extends FragmentActivity implements LoaderManag
                 } else {
                     ImageItem item = adapter.getItem(position - 1);
                     Toast.makeText(ChooseImageActivity.this, item.name, Toast.LENGTH_LONG).show();
+                    Fragment fragment = new PreviewFragment();
+                    Bundle args = new Bundle();
+                    args.putInt("offset", position-1);
+                    args.putBoolean("show_all", true);
+                    fragment.setArguments(args);
+                    getSupportFragmentManager().beginTransaction().replace(R.id.preview, fragment).commit();
                 }
             }
         });
@@ -132,6 +139,11 @@ public class ChooseImageActivity extends FragmentActivity implements LoaderManag
     }
 
     public List<String> getSelectedPhotos() {
+        return adapter.getSelectedImage();
+    }
+
+    public List<String> getAllPhotos() {
+        //@ TODO return all photos
         return adapter.getSelectedImage();
     }
 }
