@@ -5,18 +5,18 @@ import android.content.Context;
 import android.os.Environment;
 import android.text.TextUtils;
 
-public class AppFileManager {
-	private static AppFileManager	instance			= null;
+public class FileMgr {
+	private static FileMgr	instance			= null;
 	/** 如果没有sdcard，文件保存路径 */
 	private static String			CACHE_APP_ROOT_DIR	= null;
 	/** 文件在sdcard中保存路径 */
 	private static String			SDCARD_APP_ROOT_DIR	= null;
 
-	public static AppFileManager getInstance(Context context) {
+	public static FileMgr getInstance(Context context) {
 		if (instance == null) {
-			synchronized (AppFileManager.class) {
+			synchronized (FileMgr.class) {
 				if (instance == null) {
-					instance = new AppFileManager(context);
+					instance = new FileMgr(context);
 				}
 			}
 		}
@@ -24,7 +24,7 @@ public class AppFileManager {
 		return instance;
 	}
 
-	private AppFileManager(Context context) {
+	private FileMgr(Context context) {
 		String appPkg = context.getPackageName();
 
 		SDCARD_APP_ROOT_DIR = Environment.getExternalStorageDirectory() + File.separator //

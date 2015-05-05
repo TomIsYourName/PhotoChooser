@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -18,139 +17,137 @@ import android.widget.Toast;
 import com.litijun.photochooser.R;
 import com.litijun.photochooser.adapter.vo.ImageItem;
 import com.litijun.photochooser.manager.ImageLoaderMgr;
+import com.litijun.photochooser.utils.DebugLog;
 import com.litijun.photochooser.utils.Utils;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class PictureAdapter extends BaseAdapter {
-    private int itemSize;
-    private LayoutInflater inflater;
-    private CompoundButton.OnCheckedChangeListener listener1;
-    private View.OnClickListener listener;
-    private Map<Integer, ImageItem> dataMap;
-    private Context context;
-    private RelativeLayout.LayoutParams params;
-    private Cursor loadCursor;
-    private ImageLoaderMgr loaderManager;
+	private int							itemSize;
+	private LayoutInflater				inflater;
+	private View.OnClickListener		listener;
+	private Context						context;
+	private RelativeLayout.LayoutParams	params;
+	private ImageLoaderMgr				loaderManager;
 
-    public PictureAdapter(Activity activity) {
-        inflater = activity.getLayoutInflater();
-        dataMap = new HashMap<Integer, ImageItem>();
-        context = activity;
-        loaderManager = ImageLoaderMgr.getInstance(context);
+	public PictureAdapter(Activity activity) {
+		inflater = activity.getLayoutInflater();
+		context = activity;
+		loaderManager = ImageLoaderMgr.getInstance(context);
 
-        // 计算每个项的高度：高度=宽度
-        int[] point = new int[2];
-        Utils.GetScreenSize(context, point);
-        int spaceSize = context.getResources().getDimensionPixelSize(R.dimen.gridview_space_size) * 2;
-        itemSize = (point[0] - spaceSize) / 3;
+		// 计算每个项的高度：高度=宽度
+		int[] point = new int[2];
+		Utils.GetScreenSize(context, point);
+		int spaceSize = context.getResources().getDimensionPixelSize(R.dimen.gridview_space_size) * 2;
+		itemSize = (point[0] - spaceSize) / 3;
 
-        listener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ViewHolder holder = (ViewHolder) v.getTag();
-                if (!holder.checkBox.isChecked()) {
-                    holder.checkBox.setChecked(false);
-                    loaderManager.removeSelect(holder.imageItem);
-                } else {
-                    if (!loaderManager.addSelect(holder.imageItem)) {
-                        holder.checkBox.setChecked(false);
-                        Toast.makeText(context, String.format("您最多只能选择%d张图片", loaderManager.getMaxSelectSize()), Toast.LENGTH_LONG).show();
-                    } else {
-                        holder.checkBox.setChecked(true);
-                    }
-                }
-            }
-        };
-    }
+		listener = new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				ViewHolder holder = (ViewHolder) v.getTag();
+				if (!holder.checkBox.isChecked()) {
+					holder.checkBox.setChecked(false);
+					loaderManager.removeSelect(holder.imageItem);
+				}
+				else {
+					if (!loaderManager.addSelect(holder.imageItem)) {
+						holder.checkBox.setChecked(false);
+						Toast.makeText(context, context.getString(R.string.max_pic, loaderManager.getMaxSelectSize()), Toast.LENGTH_LONG).show();
+					}
+					else {
+						holder.checkBox.setChecked(true);
+					}
+				}
+			}
+		};
+	}
 
-    @Override
-    public int getCount() {
-        if (loadCursor == null) {
-            return 0;
-        }
-        return loadCursor.getCount() + 1;
-    }
+	@Override
+	public int getCount() {
+		int size = ImageLoaderMgr.getInstance(context).getAllImageList().size();
+		if (ImageLoaderMgr.getInstance(context).isTakePhoto()) {
+			size += 1;
+		}
+		return size;
+	}
 
-    @Override
-    public ImageItem getItem(int position) {
-        return dataMap.get(position + 1);
-    }
+	@Override
+	public ImageItem getItem(int position) {
 
-    @Override
-    public long getItemId(int position) {
-        ImageItem item = dataMap.get(position);
-        if (item == null) return 0;
-        return dataMap.get(position + 1).id;
-    }
+		if (ImageLoaderMgr.getInstance(context).isTakePhoto()) {
+			position = position - 1;
+		}
+		return ImageLoaderMgr.getInstance(context).getAllImageList().get(position);
+	}
 
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder holder;
-        if (convertView == null) {
-            convertView = inflater.inflate(R.layout.item_picture, null);
-            holder = new ViewHolder();
-            holder.checkBox = (CheckBox) convertView.findViewById(R.id.picture_checkbox);
-            holder.imageView = (ImageView) convertView.findViewById(R.id.picture_imageview);
-            holder.textView = (TextView) convertView.findViewById(R.id.text);
-            holder.checkBox.setOnClickListener(listener);
-            params = (RelativeLayout.LayoutParams) holder.imageView.getLayoutParams();
-            params.height = itemSize;
-            holder.imageView.setLayoutParams(params);
+	@Override
+	public long getItemId(int position) {
+		ImageItem item = ImageLoaderMgr.getInstance(context).getAllImageList().get(position);
+		if (item == null)
+			return 0;
+		return item.id;
+	}
 
-            holder.checkBox.setTag(holder);
-            convertView.setTag(holder);
-        } else {
-            holder = (ViewHolder) convertView.getTag();
-        }
+	@Override
+	public View getView(int position, View convertView, ViewGroup parent) {
+		ViewHolder holder;
+		if (convertView == null) {
+			convertView = inflater.inflate(R.layout.item_picture, null);
+			holder = new ViewHolder();
+			holder.checkBox = (CheckBox) convertView.findViewById(R.id.picture_checkbox);
+			holder.imageView = (ImageView) convertView.findViewById(R.id.picture_imageview);
+			holder.textView = (TextView) convertView.findViewById(R.id.text);
+			holder.checkBox.setOnClickListener(listener);
+			params = (RelativeLayout.LayoutParams) holder.imageView.getLayoutParams();
+			params.height = itemSize;
+			holder.imageView.setLayoutParams(params);
 
-        if (loadCursor != null) {
-            if (position == 0) {
-                holder.checkBox.setChecked(false);
-                holder.checkBox.setVisibility(View.GONE);
-                holder.imageView.setImageResource(R.drawable.take_photo);
-            } else {
-                loadCursor.moveToPosition(position - 1);
-                ImageItem item;
-                if (!dataMap.containsKey(position)) {
-                    item = new ImageItem();
-                    item.id = loadCursor.getInt(loadCursor.getColumnIndex(MediaStore.Images.Media._ID));
-                    item.name = loadCursor.getString(loadCursor.getColumnIndex(MediaStore.Images.Media.DISPLAY_NAME));
-                    item.realPath = loadCursor.getString(loadCursor.getColumnIndex(MediaStore.Images.Media.DATA));
-                    item.albumId = loadCursor.getInt(loadCursor.getColumnIndex(MediaStore.Images.Media.BUCKET_ID));
+			holder.checkBox.setTag(holder);
+			convertView.setTag(holder);
+		}
+		else {
+			holder = (ViewHolder) convertView.getTag();
+		}
 
-                    dataMap.put(position, item);
-                } else {
-                    item = dataMap.get(position);
-                }
-                holder.imageItem = item;
-                holder.textView.setText(item.name);
-                holder.checkBox.setChecked(loaderManager.getImageItem(item.id) != null && loaderManager.getSelectCount() <= loaderManager.getMaxSelectSize());
-                holder.checkBox.setVisibility(View.VISIBLE);
+		if (ImageLoaderMgr.getInstance(context).getAllImageList() != null) {
+			if (position == 0 && ImageLoaderMgr.getInstance(context).isTakePhoto()) {
+				holder.checkBox.setChecked(false);
+				holder.checkBox.setVisibility(View.GONE);
+				holder.imageView.setImageResource(R.drawable.take_photo);
+			}
+			else {
+				ImageItem item = getItem(position);
+				holder.imageItem = item;
+				holder.textView.setText(item.name);
+				holder.checkBox.setChecked(loaderManager.getImageItem(item.id) != null && loaderManager.getSelectCount() <= loaderManager.getMaxSelectSize());
+				holder.checkBox.setVisibility(View.VISIBLE);
+				ImageLoaderMgr.getInstance(context).dispalyImage(item.realPath, holder.imageView);
+			}
+		}
+		return convertView;
+	}
 
-                ImageLoaderMgr.getInstance(context).dispalyImage(item.realPath, holder.imageView);
+	public void setLoadCursor(Cursor loadCursor) {
+		ImageLoaderMgr.getInstance(context).getAllImageList().clear();
+		if (loadCursor != null) {
+			DebugLog.d("loadCursor Size = " + loadCursor.getCount());
+			for (int i = 0, count = loadCursor.getCount(); i < count; i++) {
+				loadCursor.moveToPosition(i);
+				ImageItem item = new ImageItem();
+				item.id = loadCursor.getInt(loadCursor.getColumnIndex(MediaStore.Images.Media._ID));
+				item.name = loadCursor.getString(loadCursor.getColumnIndex(MediaStore.Images.Media.DISPLAY_NAME));
+				item.realPath = loadCursor.getString(loadCursor.getColumnIndex(MediaStore.Images.Media.DATA));
+				item.albumId = loadCursor.getInt(loadCursor.getColumnIndex(MediaStore.Images.Media.BUCKET_ID));
+				
+				ImageLoaderMgr.getInstance(context).getAllImageList().add(item);
+			}
+			DebugLog.d("AllImageList Size = " + ImageLoaderMgr.getInstance(context).getAllImageList().size());
+		}
+		notifyDataSetChanged();
+	}
 
-            }
-        }
-        return convertView;
-    }
-
-    public void setLoadCursor(Cursor loadCursor) {
-        dataMap.clear();
-        this.loadCursor = loadCursor;
-        notifyDataSetChanged();
-    }
-
-    public Cursor getLoadCursor() {
-        return loadCursor;
-    }
-
-
-    class ViewHolder {
-        ImageItem imageItem;
-        ImageView imageView;
-        CheckBox checkBox;
-        TextView textView;
-    }
+	class ViewHolder {
+		ImageItem	imageItem;
+		ImageView	imageView;
+		CheckBox	checkBox;
+		TextView	textView;
+	}
 }

@@ -1,7 +1,10 @@
 package com.litijun.photochooser.adapter.vo;
 
 
-public class ImageItem {
+import java.io.Serializable;
+
+public class ImageItem implements Serializable {
+
     public String name;
     public int id;
     public int albumId;

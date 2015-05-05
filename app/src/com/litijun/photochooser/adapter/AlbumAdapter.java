@@ -5,7 +5,6 @@ import java.util.Map;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.net.Uri;
 import android.provider.MediaStore;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,11 +16,11 @@ import com.litijun.photochooser.R;
 import com.litijun.photochooser.adapter.vo.AlbumItem;
 import com.litijun.photochooser.manager.ImageLoaderMgr;
 import com.litijun.photochooser.utils.DebugLog;
+import com.litijun.photochooser.utils.Utils;
 
 public class AlbumAdapter extends BaseAdapter {
 	private Context					context;
 	private Map<Integer, AlbumItem>	albumMap;
-	private Cursor					albumCursor;
 	private int						currAlumbId;
 
 	public AlbumAdapter(Context context) {
@@ -31,10 +30,10 @@ public class AlbumAdapter extends BaseAdapter {
 
 	@Override
 	public int getCount() {
-		if (albumCursor == null) {
+		if (albumMap == null) {
 			return 0;
 		}
-		return albumCursor.getCount();
+		return albumMap.size();
 	}
 
 	@Override
@@ -64,39 +63,11 @@ public class AlbumAdapter extends BaseAdapter {
 			holder = (ViewHolder) convertView.getTag();
 		}
 
-		if (albumCursor != null) {
-			albumCursor.moveToPosition(position);
-
-			AlbumItem albumItem;
-			if (!albumMap.containsKey(position + 1)) {
-				// 创建相册对象
-				albumItem = new AlbumItem();
-				albumItem.firstImageId = albumCursor.getInt(albumCursor.getColumnIndex(MediaStore.Images.ImageColumns._ID));
-
-				Uri uri_temp = Uri.parse("content://media/external/images/media/" + albumItem.firstImageId);
-				Cursor cur = MediaStore.Images.Media.query(context.getContentResolver(), uri_temp, new String[] { MediaStore.Images.Media.DATA });
-				if (cur != null && cur.moveToFirst()) {
-					albumItem.firstImagePath = cur.getString(cur.getColumnIndex(MediaStore.Images.Media.DATA));
-				}
-				else {
-					albumItem.firstImagePath = "";
-				}
-				albumItem.albumName = albumCursor.getString(albumCursor.getColumnIndex(MediaStore.Images.ImageColumns.BUCKET_DISPLAY_NAME));
-				albumItem.id = albumCursor.getInt(albumCursor.getColumnIndex(MediaStore.Images.ImageColumns.BUCKET_ID));
-				albumItem.imageCount = albumCursor.getInt(albumCursor.getColumnIndex("allbum_count"));
-				albumMap.put(position + 1, albumItem);
-			}
-			else {
-				albumItem = albumMap.get(position);
-			}
-
+		if (albumMap != null) {
+			AlbumItem albumItem = getItem(position);
 			holder.nameView.setText(albumItem.albumName);
 			holder.countView.setText(albumItem.imageCount + "张");
 			holder.currFlagView.setVisibility(albumItem.id == this.currAlumbId ? View.VISIBLE : View.GONE);
-			// ImageLoaderMgr.getInstance(context).dispalyThumnailImage(albumItem.firstImageId,
-			// holder.imageView);
-
-			DebugLog.d(albumItem.firstImagePath);
 			ImageLoaderMgr.getInstance(context).dispalyImage(albumItem.firstImagePath, holder.imageView);
 		}
 		return convertView;
@@ -107,17 +78,28 @@ public class AlbumAdapter extends BaseAdapter {
 		notifyDataSetChanged();
 	}
 
-	public Cursor getAlbumCursor() {
-		return albumCursor;
-	}
-
 	public void setAlbumCursor(Cursor albumCursor) {
-		this.albumCursor = albumCursor;
+		albumMap.clear();
+		if (albumCursor != null) {
+			DebugLog.d("loadCursor Size = " + albumCursor.getCount());
+			for (int i = 0, count = albumCursor.getCount(); i < count; i++) {
+				albumCursor.moveToPosition(i);
+				AlbumItem albumItem = new AlbumItem();
+				albumItem.firstImageId = albumCursor.getInt(albumCursor.getColumnIndex(MediaStore.Images.ImageColumns._ID));
+				albumItem.firstImagePath = Utils.getImagePath(context, albumItem.firstImageId);
+				albumItem.albumName = albumCursor.getString(albumCursor.getColumnIndex(MediaStore.Images.ImageColumns.BUCKET_DISPLAY_NAME));
+				albumItem.id = albumCursor.getInt(albumCursor.getColumnIndex(MediaStore.Images.ImageColumns.BUCKET_ID));
+				albumItem.imageCount = albumCursor.getInt(albumCursor.getColumnIndex("allbum_count"));
+				albumMap.put(i + 1, albumItem);
+			}
+			DebugLog.d("albumMap Size = " + albumMap.size());
+		}
 		notifyDataSetChanged();
 	}
 
 	public void setItem(int position, AlbumItem item) {
 		albumMap.put(position, item);
+		setCurrAlumbId(item.id);
 	}
 
 	class ViewHolder {

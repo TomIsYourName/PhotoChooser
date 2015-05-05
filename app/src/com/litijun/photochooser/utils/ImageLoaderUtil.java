@@ -43,7 +43,7 @@ public class ImageLoaderUtil {
 	        .memoryCache(new LruMemoryCache(15 * 1024 * 1024))
 	        .memoryCacheSize(20 * 1024 * 1024)
 	        .memoryCacheSizePercentage(13) // default
-	        .diskCache(new UnlimitedDiscCache(AppFileManager.getInstance(context).createFileDir("imgCache"))) 
+	        .diskCache(new UnlimitedDiscCache(FileMgr.getInstance(context).createFileDir("imgCache"))) 
 	        .diskCacheFileNameGenerator(new HashCodeFileNameGenerator()) // default
 	        .imageDownloader(new BaseImageDownloader(context)) // default
 	        .writeDebugLogs()
