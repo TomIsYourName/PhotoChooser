@@ -1,7 +1,5 @@
 package com.litijun.photochooser.adapter;
 
-import java.util.List;
-
 import android.content.Context;
 import android.support.v4.view.PagerAdapter;
 import android.view.LayoutInflater;
@@ -12,6 +10,8 @@ import android.widget.ImageView;
 import com.litijun.photochooser.R;
 import com.litijun.photochooser.adapter.vo.ImageItem;
 import com.litijun.photochooser.manager.ImageLoaderMgr;
+
+import java.util.List;
 
 /**
  * Created by zain on 15-5-4.
@@ -57,6 +57,8 @@ public class PreviewAdapter extends PagerAdapter {
 			position = position % getCount();
 		}
 		String imgpath = getCount() > 0 ? data.get(position).realPath : "";
+
+
 
 		ImageLoaderMgr.getInstance(mContext).dispalyImage(imgpath, iv_preview);
 		container.addView(view);

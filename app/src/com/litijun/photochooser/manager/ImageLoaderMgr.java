@@ -19,7 +19,7 @@ public class ImageLoaderMgr {
 
 	private static volatile ImageLoaderMgr	instance;
 	private Context							context;
-	private Map<Integer, ImageItem>			imageItemMap;
+	private Map<Integer, ImageItem>         selectedItemMap;
 	private List<ImageItem>					allImageList;
 	private int								maxSelectSize;
 	private boolean							isTakePhoto;
@@ -27,7 +27,7 @@ public class ImageLoaderMgr {
 	private ImageLoaderMgr(Context context) {
 		this.context = context;
 		this.maxSelectSize = 0;
-		this.imageItemMap = new HashMap<Integer, ImageItem>(maxSelectSize);
+		this.selectedItemMap = new HashMap<Integer, ImageItem>(maxSelectSize);
 		this.allImageList = new ArrayList<ImageItem>();
 	}
 
@@ -49,11 +49,11 @@ public class ImageLoaderMgr {
 	}
 
 	public int getSelectCount() {
-		return imageItemMap.size();
+		return selectedItemMap.size();
 	}
 
-	public Map<Integer, ImageItem> getImageItemMap() {
-		return imageItemMap;
+	public Map<Integer, ImageItem> getSelectedItemMap() {
+		return selectedItemMap;
 	}
 
 	public List<ImageItem> getAllImageList() {
@@ -62,8 +62,8 @@ public class ImageLoaderMgr {
 
 	public List<ImageItem> getSeletectList() {
 		List<ImageItem> data = new ArrayList<ImageItem>();
-		Map<Integer, ImageItem> imageItemMap = ImageLoaderMgr.getInstance(context).getImageItemMap();
-		DebugLog.v("imageItemMap.size() = " + imageItemMap.size());
+		Map<Integer, ImageItem> imageItemMap = ImageLoaderMgr.getInstance(context).getSelectedItemMap();
+		DebugLog.v("SeletectList.size() = " + imageItemMap.size());
 		for (Map.Entry<Integer, ImageItem> entry : imageItemMap.entrySet()) {
 			Integer key = entry.getKey();
 			ImageItem value = entry.getValue();
@@ -75,27 +75,31 @@ public class ImageLoaderMgr {
 	}
 
 	public boolean addSelect(ImageItem item) {
-		if (imageItemMap.containsKey(item.id)) {
+		if (selectedItemMap.containsKey(item.id)) {
 			return true;
 		}
-		else if (imageItemMap.size() >= maxSelectSize) {
+		else if (selectedItemMap.size() >= maxSelectSize) {
 			return false;
 		}
 		else {
-			imageItemMap.put(item.id, item);
+			selectedItemMap.put(item.id, item);
 			return true;
 		}
 	}
 
 	public boolean removeSelect(ImageItem item) {
-		if (imageItemMap.containsKey(item.id)) {
-			imageItemMap.remove(item.id);
+		if (selectedItemMap.containsKey(item.id)) {
+			selectedItemMap.remove(item.id);
 		}
 		return true;
 	}
 
+	public void clearSelect(){
+        selectedItemMap.clear();
+	}
+
 	public ImageItem getImageItem(int key) {
-		return imageItemMap.get(key);
+		return selectedItemMap.get(key);
 	}
 
 	public boolean isTakePhoto() {

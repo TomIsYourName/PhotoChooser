@@ -2,13 +2,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MyActivity" >
+    tools:context=".MyActivity">
 
     <RelativeLayout
         android:id="@+id/choose_image_header"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:background="@color/app_style_color" >
+        android:background="@color/app_style_color">
 
         <Button
             android:id="@+id/header_back"
@@ -20,13 +20,17 @@
             android:paddingLeft="15dp"
             android:paddingRight="15dp"
             android:text="返回"
+            android:textSize="18sp"
             android:textColor="#FFFFFF" />
 
         <TextView
             android:id="@+id/header_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true" />
+            android:layout_centerInParent="true"
+            android:textSize="18sp"
+            android:textColor="#FFFFFF"
+            />
 
         <Button
             android:id="@+id/header_right_button"
@@ -34,10 +38,12 @@
             android:layout_height="35dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
+            android:background="@null"
             android:paddingLeft="15dp"
             android:paddingRight="15dp"
-            android:textColor="#FFFFFF"
-            android:visibility="gone" />
+            android:text="完成"
+            android:textSize="18sp"
+            android:textColor="#FFFFFF" />
     </RelativeLayout>
 
     <GridView
@@ -53,8 +59,7 @@
         android:numColumns="3"
         android:scrollbars="none"
         android:stretchMode="columnWidth"
-        android:verticalSpacing="@dimen/gridview_space_size" >
-    </GridView>
+        android:verticalSpacing="@dimen/gridview_space_size"></GridView>
 
     <fragment
         android:id="@+id/choose_image_album"
@@ -65,8 +70,9 @@
         android:layout_below="@+id/choose_image_header"
         tools:layout="@layout/fragment_select_album" />
 
-    <RelativeLayout android:id="@+id/preview"
+    <RelativeLayout
+        android:id="@+id/preview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent" />
 
 </RelativeLayout>

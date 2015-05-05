@@ -14,6 +14,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.litijun.photochooser.ChooseImageActivity;
 import com.litijun.photochooser.R;
 import com.litijun.photochooser.adapter.vo.ImageItem;
 import com.litijun.photochooser.manager.ImageLoaderMgr;
@@ -56,6 +57,7 @@ public class PictureAdapter extends BaseAdapter {
 						holder.checkBox.setChecked(true);
 					}
 				}
+				((ChooseImageActivity)context).changeSelectedCount();
 			}
 		};
 	}

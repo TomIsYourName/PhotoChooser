@@ -3,8 +3,8 @@ package com.litijun.photochooser;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -25,12 +25,16 @@ import com.litijun.photochooser.utils.DebugLog;
 import com.litijun.photochooser.utils.LoadeImageConsts;
 import com.litijun.photochooser.utils.Utils;
 
-public class ChooseImageActivity extends FragmentActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class ChooseImageActivity extends FragmentActivity implements View.OnClickListener,LoaderManager.LoaderCallbacks<Cursor> {
 	public static final String[]	LOADING_COLUMN	= { MediaStore.Images.ImageColumns._ID,//
 			MediaStore.Images.Media.DATA, //
 			MediaStore.Images.ImageColumns.DISPLAY_NAME,//
 			MediaStore.Images.Media.BUCKET_ID,		};
 	private Integer					albumId;
+
+	private Button header_back;
+	private TextView header_title;
+	private Button header_right_button;
 
 	private GridView				gridView;
 	private PictureAdapter			adapter;
@@ -43,7 +47,6 @@ public class ChooseImageActivity extends FragmentActivity implements LoaderManag
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_choose_image);
 		ImageLoaderMgr.getInstance(getApplication()).setMaxSelectSize(6);
-		ImageLoaderMgr.getInstance(getApplication()).setTakePhoto(true);
 		gridView = (GridView) findViewById(R.id.choose_image_gridview);
 		adapter = new PictureAdapter(this);
 		albumFragment = (SelectAlbumFragment) getSupportFragmentManager().findFragmentById(R.id.choose_image_album);
@@ -54,8 +57,7 @@ public class ChooseImageActivity extends FragmentActivity implements LoaderManag
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				if (position == 0 && ImageLoaderMgr.getInstance(getApplication()).isTakePhoto()) {
 					Toast.makeText(ChooseImageActivity.this, "拍照", Toast.LENGTH_LONG).show();
-				}
-				else {
+				} else {
 					ImageItem item = adapter.getItem(position);
 					previewFragment = new PreviewFragment();
 					Bundle args = new Bundle();
@@ -63,7 +65,8 @@ public class ChooseImageActivity extends FragmentActivity implements LoaderManag
 					args.putBoolean("show_all", true);
 					args.putSerializable("ImageItem", item);
 					previewFragment.setArguments(args);
-					getSupportFragmentManager().beginTransaction().replace(R.id.preview, previewFragment).commit();
+
+					showPreviewFragment(previewFragment);
 				}
 			}
 		});
@@ -74,29 +77,36 @@ public class ChooseImageActivity extends FragmentActivity implements LoaderManag
 
 	public void refreshGridViewByAlbumId(int id) {
 		DebugLog.d("album id = " + id);
+		if (id == LoadeImageConsts.LOADER_IMAGE_CURSOR) {
+			ImageLoaderMgr.getInstance(getApplication()).setTakePhoto(ImageLoaderMgr.getInstance(getApplication()).isTakePhoto());
+		}else{
+			ImageLoaderMgr.getInstance(getApplication()).setTakePhoto(false);
+		}
 		this.albumId = id;
 		getSupportLoaderManager().initLoader(id, null, this);
 	}
 
 	private void initHeader() {
-		Button backButton = (Button) findViewById(R.id.header_back);
-		backButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				finish();
-			}
-		});
+		header_back = (Button) findViewById(R.id.header_back);
+		header_back.setOnClickListener(this);
 
-		TextView titleView = (TextView) findViewById(R.id.header_title);
-		titleView.setText("选择图片");
+		header_title = (TextView) findViewById(R.id.header_title);
+		header_title.setText("选择图片");
 
-		Button confirmButton = (Button) findViewById(R.id.header_right_button);
-		confirmButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				// todo confirm
-			}
-		});
+		header_right_button = (Button) findViewById(R.id.header_right_button);
+		header_right_button.setOnClickListener(this);
+
+		changeSelectedCount();
+	}
+
+	public void changeSelectedCount(){
+
+		ImageLoaderMgr imageLoaderMgr = ImageLoaderMgr.getInstance(getApplication());
+		int selectedCount = imageLoaderMgr.getSelectCount();
+		if(selectedCount>0)
+			header_right_button.setText(getString(R.string.select_done, selectedCount, imageLoaderMgr.getMaxSelectSize()));
+		else
+			header_right_button.setText("完成");
 	}
 
 	@Override
@@ -142,15 +152,39 @@ public class ChooseImageActivity extends FragmentActivity implements LoaderManag
 	@Override
 	public void onBackPressed() {
 		if(previewFragment != null){
-			getSupportFragmentManager().beginTransaction().remove(previewFragment).commit();
+			FragmentTransaction ft = getSupportFragmentManager().beginTransaction(); 
+			ft.setCustomAnimations(R.anim.slide_up,R.anim.slide_down); 
+			ft.remove(previewFragment).commit();
 			previewFragment = null;
 			return;
 		}
 		super.onBackPressed();
 	}
 
+
+	@Override
+	public void onClick(View v) {
+		switch (v.getId()){
+			case R.id.header_back:
+			case R.id.header_right_button:
+				onBackPressed();
+				break;
+		}
+	}
+
+	private void showPreviewFragment(PreviewFragment previewFragment){
+		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+		ft.setCustomAnimations(R.anim.slide_up, R.anim.slide_down);
+		ft.replace(R.id.preview, previewFragment).commit();
+	}
+
 	public void showPreview() {
-		getSupportFragmentManager().beginTransaction().replace(R.id.preview, new PreviewFragment()).commit();
+		if(ImageLoaderMgr.getInstance(getApplication()).getSeletectList().size()<=0){
+			Toast.makeText(ChooseImageActivity.this, getString(R.string.have_no_chosen), Toast.LENGTH_LONG).show();
+		}else{
+			previewFragment = new PreviewFragment();
+			showPreviewFragment(previewFragment);
+		}
 	}
 
 }
