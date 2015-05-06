@@ -6,8 +6,6 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.DisplayMetrics;
 
-import com.litijun.photochooser.adapter.vo.AlbumItem;
-
 
 public class Utils {
     /**

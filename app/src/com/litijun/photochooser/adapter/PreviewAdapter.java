@@ -1,5 +1,7 @@
 package com.litijun.photochooser.adapter;
 
+import java.util.List;
+
 import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
@@ -13,8 +15,6 @@ import com.litijun.photochooser.adapter.vo.ImageItem;
 import com.litijun.photochooser.fragment.PreviewFragment;
 import com.litijun.photochooser.manager.PhotoChooseMgr;
 import com.litijun.photochooser.widgets.photoview.PhotoView;
-
-import java.util.List;
 
 /**
  * Created by zain on 15-5-4.

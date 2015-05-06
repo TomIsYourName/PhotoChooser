@@ -1,5 +1,8 @@
 package com.litijun.photochooser.fragment;
 
+import java.lang.reflect.Field;
+import java.util.List;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
@@ -22,9 +25,6 @@ import com.litijun.photochooser.manager.PhotoChooseMgr;
 import com.litijun.photochooser.utils.DebugLog;
 import com.litijun.photochooser.widgets.DepthPageTransformer;
 import com.litijun.photochooser.widgets.FixedScroller;
-
-import java.lang.reflect.Field;
-import java.util.List;
 
 public class PreviewFragment extends Fragment implements View.OnClickListener, ViewPager.OnPageChangeListener {
 

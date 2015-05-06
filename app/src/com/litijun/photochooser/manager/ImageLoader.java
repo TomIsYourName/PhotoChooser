@@ -1,14 +1,14 @@
 package com.litijun.photochooser.manager;
 
+import java.lang.ref.SoftReference;
+import java.util.HashMap;
+import java.util.Map;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.Log;
-
-import java.lang.ref.SoftReference;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * 显示图片

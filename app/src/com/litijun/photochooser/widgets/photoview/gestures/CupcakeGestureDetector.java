@@ -16,11 +16,11 @@
 package com.litijun.photochooser.widgets.photoview.gestures;
 
 import android.content.Context;
-import android.util.FloatMath;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.ViewConfiguration;
+
+import com.litijun.photochooser.utils.DebugLog;
 
 public class CupcakeGestureDetector implements GestureDetector {
 
@@ -58,6 +58,10 @@ public class CupcakeGestureDetector implements GestureDetector {
         return false;
     }
 
+    public boolean isDragging() {
+        return mIsDragging;
+    }
+
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         switch (ev.getAction()) {
@@ -66,7 +70,7 @@ public class CupcakeGestureDetector implements GestureDetector {
                 if (null != mVelocityTracker) {
                     mVelocityTracker.addMovement(ev);
                 } else {
-                    Log.i(LOG_TAG, "Velocity tracker is null");
+                    DebugLog.i(LOG_TAG, "Velocity tracker is null");
                 }
 
                 mLastTouchX = getActiveX(ev);
@@ -83,7 +87,7 @@ public class CupcakeGestureDetector implements GestureDetector {
                 if (!mIsDragging) {
                     // Use Pythagoras to see if drag length is larger than
                     // touch slop
-                    mIsDragging = FloatMath.sqrt((dx * dx) + (dy * dy)) >= mTouchSlop;
+                    mIsDragging = Math.sqrt((dx * dx) + (dy * dy)) >= mTouchSlop;
                 }
 
                 if (mIsDragging) {

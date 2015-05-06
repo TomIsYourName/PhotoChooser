@@ -1,5 +1,10 @@
 package com.litijun.photochooser.manager;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import android.content.Context;
 import android.widget.ImageView;
 
@@ -9,11 +14,6 @@ import com.litijun.photochooser.utils.DebugLog;
 import com.litijun.photochooser.utils.ImageLoaderUtil;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.download.ImageDownloader.Scheme;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class PhotoChooseMgr {
 
