@@ -65,8 +65,13 @@ public class SelectAlbumFragment extends Fragment implements LoaderManager.Loade
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				AlbumItem item = adapter.getItem(position);
-				((PhotoChooseActivity) getActivity()).refreshGridViewByAlbumId(item.id);
-				adapter.setCurrAlumbId(item.id);
+				if(item != null){
+					((PhotoChooseActivity) getActivity()).refreshGridViewByAlbumId(item.id);
+					adapter.setCurrAlumbId(item.id);
+				}else{
+					((PhotoChooseActivity) getActivity()).refreshGridViewByAlbumId(LoadeImageConsts.LOADER_IMAGE_CURSOR);
+					adapter.setCurrAlumbId(LoadeImageConsts.LOADER_IMAGE_CURSOR);
+				}
 				hideList();
 			}
 		});
@@ -93,7 +98,7 @@ public class SelectAlbumFragment extends Fragment implements LoaderManager.Loade
 	}
 
 	public void setFirstItem(AlbumItem item) {
-		adapter.setItem(0, item);
+		adapter.setFirstItem(true, item);
 	}
 
 	public void showOrHideList() {

@@ -1,5 +1,8 @@
 package com.litijun.photochooser.adapter;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import android.content.Context;
 import android.database.Cursor;
 import android.provider.MediaStore;
@@ -13,10 +16,8 @@ import com.litijun.photochooser.R;
 import com.litijun.photochooser.adapter.vo.AlbumItem;
 import com.litijun.photochooser.manager.PhotoChooseMgr;
 import com.litijun.photochooser.utils.DebugLog;
+import com.litijun.photochooser.utils.LoadeImageConsts;
 import com.litijun.photochooser.utils.Utils;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class AlbumAdapter extends BaseAdapter {
 	private Context					context;
@@ -93,14 +94,34 @@ public class AlbumAdapter extends BaseAdapter {
 				albumItem.imageCount = albumCursor.getInt(albumCursor.getColumnIndex("allbum_count"));
 				albumMap.put(i + 1, albumItem);
 			}
+			
+			AlbumItem firstItem = new AlbumItem();
+			firstItem.id = LoadeImageConsts.LOADER_IMAGE_CURSOR;
+			firstItem.albumName = context.getString(R.string.all_photos);
+			int amount =0;
+			for (Map.Entry<Integer, AlbumItem> entry : albumMap.entrySet()) {
+				Integer key = entry.getKey();
+				AlbumItem value = entry.getValue();
+				amount += value.imageCount;
+				if(key == 1){
+					firstItem.firstImageId = value.firstImageId;
+					firstItem.firstImagePath = value.firstImagePath;
+				}
+			}
+			firstItem.imageCount=+amount;
+			setFirstItem(false, firstItem);
 			DebugLog.d("albumMap Size = " + albumMap.size());
+			notifyDataSetChanged();
 		}
-		notifyDataSetChanged();
 	}
 
-	public void setItem(int position, AlbumItem item) {
-		albumMap.put(position, item);
+	public void setFirstItem(boolean isreal, AlbumItem item) {
+		AlbumItem firstItem = albumMap.get(0);
+		if(firstItem == null || isreal){
+			albumMap.put(0, item);
+		}
 		setCurrAlumbId(item.id);
+		notifyDataSetChanged();
 	}
 
 	class ViewHolder {

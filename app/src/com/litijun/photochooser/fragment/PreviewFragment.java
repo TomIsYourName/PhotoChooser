@@ -72,7 +72,7 @@ public class PreviewFragment extends Fragment implements View.OnClickListener, V
         initVPAnim();
         changeSelectedCount();
         setCheckStatus(offset);
-        delayedHide(3000);
+        //delayedHide(3000);
     }
 
 
@@ -95,10 +95,10 @@ public class PreviewFragment extends Fragment implements View.OnClickListener, V
         preview_image_header.animate().translationY(visible ? -mHeaderHeight:0).setDuration(mShortAnimTime);
 
         visible = !visible;
-        if (visible) {
-            // Schedule a hide().
-            delayedHide(3000);
-        }
+//        if (visible) {
+//            // Schedule a hide().
+//            delayedHide(3000);
+//        }
     }
 
 
