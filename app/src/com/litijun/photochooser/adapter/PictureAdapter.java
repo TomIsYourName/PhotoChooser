@@ -14,10 +14,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.litijun.photochooser.ChooseImageActivity;
+import com.litijun.photochooser.PhotoChooseActivity;
 import com.litijun.photochooser.R;
 import com.litijun.photochooser.adapter.vo.ImageItem;
-import com.litijun.photochooser.manager.ImageLoaderMgr;
+import com.litijun.photochooser.manager.PhotoChooseMgr;
 import com.litijun.photochooser.utils.DebugLog;
 import com.litijun.photochooser.utils.Utils;
 
@@ -27,12 +27,12 @@ public class PictureAdapter extends BaseAdapter {
 	private View.OnClickListener		listener;
 	private Context						context;
 	private RelativeLayout.LayoutParams	params;
-	private ImageLoaderMgr				loaderManager;
+	private PhotoChooseMgr loaderManager;
 
 	public PictureAdapter(Activity activity) {
 		inflater = activity.getLayoutInflater();
 		context = activity;
-		loaderManager = ImageLoaderMgr.getInstance(context);
+		loaderManager = PhotoChooseMgr.getInstance(context);
 
 		// 计算每个项的高度：高度=宽度
 		int[] point = new int[2];
@@ -57,15 +57,15 @@ public class PictureAdapter extends BaseAdapter {
 						holder.checkBox.setChecked(true);
 					}
 				}
-				((ChooseImageActivity)context).changeSelectedCount();
+				((PhotoChooseActivity)context).changeSelectedCount();
 			}
 		};
 	}
 
 	@Override
 	public int getCount() {
-		int size = ImageLoaderMgr.getInstance(context).getAllImageList().size();
-		if (ImageLoaderMgr.getInstance(context).isTakePhoto()) {
+		int size = PhotoChooseMgr.getInstance(context).getAllImageList().size();
+		if (PhotoChooseMgr.getInstance(context).isTakePhoto()) {
 			size += 1;
 		}
 		return size;
@@ -74,15 +74,15 @@ public class PictureAdapter extends BaseAdapter {
 	@Override
 	public ImageItem getItem(int position) {
 
-		if (ImageLoaderMgr.getInstance(context).isTakePhoto()) {
+		if (PhotoChooseMgr.getInstance(context).isTakePhoto()) {
 			position = position - 1;
 		}
-		return ImageLoaderMgr.getInstance(context).getAllImageList().get(position);
+		return PhotoChooseMgr.getInstance(context).getAllImageList().get(position);
 	}
 
 	@Override
 	public long getItemId(int position) {
-		ImageItem item = ImageLoaderMgr.getInstance(context).getAllImageList().get(position);
+		ImageItem item = PhotoChooseMgr.getInstance(context).getAllImageList().get(position);
 		if (item == null)
 			return 0;
 		return item.id;
@@ -109,8 +109,8 @@ public class PictureAdapter extends BaseAdapter {
 			holder = (ViewHolder) convertView.getTag();
 		}
 
-		if (ImageLoaderMgr.getInstance(context).getAllImageList() != null) {
-			if (position == 0 && ImageLoaderMgr.getInstance(context).isTakePhoto()) {
+		if (PhotoChooseMgr.getInstance(context).getAllImageList() != null) {
+			if (position == 0 && PhotoChooseMgr.getInstance(context).isTakePhoto()) {
 				holder.checkBox.setChecked(false);
 				holder.checkBox.setVisibility(View.GONE);
 				holder.imageView.setImageResource(R.drawable.take_photo);
@@ -121,14 +121,14 @@ public class PictureAdapter extends BaseAdapter {
 				holder.textView.setText(item.name);
 				holder.checkBox.setChecked(loaderManager.getImageItem(item.id) != null && loaderManager.getSelectCount() <= loaderManager.getMaxSelectSize());
 				holder.checkBox.setVisibility(View.VISIBLE);
-				ImageLoaderMgr.getInstance(context).dispalyImage(item.realPath, holder.imageView);
+				PhotoChooseMgr.getInstance(context).dispalyImage(item.realPath, holder.imageView);
 			}
 		}
 		return convertView;
 	}
 
 	public void setLoadCursor(Cursor loadCursor) {
-		ImageLoaderMgr.getInstance(context).getAllImageList().clear();
+		PhotoChooseMgr.getInstance(context).getAllImageList().clear();
 		if (loadCursor != null) {
 			DebugLog.d("loadCursor Size = " + loadCursor.getCount());
 			for (int i = 0, count = loadCursor.getCount(); i < count; i++) {
@@ -139,9 +139,9 @@ public class PictureAdapter extends BaseAdapter {
 				item.realPath = loadCursor.getString(loadCursor.getColumnIndex(MediaStore.Images.Media.DATA));
 				item.albumId = loadCursor.getInt(loadCursor.getColumnIndex(MediaStore.Images.Media.BUCKET_ID));
 				
-				ImageLoaderMgr.getInstance(context).getAllImageList().add(item);
+				PhotoChooseMgr.getInstance(context).getAllImageList().add(item);
 			}
-			DebugLog.d("AllImageList Size = " + ImageLoaderMgr.getInstance(context).getAllImageList().size());
+			DebugLog.d("AllImageList Size = " + PhotoChooseMgr.getInstance(context).getAllImageList().size());
 		}
 		notifyDataSetChanged();
 	}

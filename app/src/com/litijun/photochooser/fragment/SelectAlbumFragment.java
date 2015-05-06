@@ -18,7 +18,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ListView;
 
-import com.litijun.photochooser.ChooseImageActivity;
+import com.litijun.photochooser.PhotoChooseActivity;
 import com.litijun.photochooser.R;
 import com.litijun.photochooser.adapter.AlbumAdapter;
 import com.litijun.photochooser.adapter.vo.AlbumItem;
@@ -65,7 +65,7 @@ public class SelectAlbumFragment extends Fragment implements LoaderManager.Loade
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				AlbumItem item = adapter.getItem(position);
-				((ChooseImageActivity) getActivity()).refreshGridViewByAlbumId(item.id);
+				((PhotoChooseActivity) getActivity()).refreshGridViewByAlbumId(item.id);
 				adapter.setCurrAlumbId(item.id);
 				hideList();
 			}
@@ -87,7 +87,7 @@ public class SelectAlbumFragment extends Fragment implements LoaderManager.Loade
 
 			@Override
 			public void onClick(View v) {
-				((ChooseImageActivity) getActivity()).showPreview();
+				((PhotoChooseActivity) getActivity()).showPreview();
 			}
 		});
 	}

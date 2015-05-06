@@ -1,8 +1,5 @@
 package com.litijun.photochooser.adapter;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import android.content.Context;
 import android.database.Cursor;
 import android.provider.MediaStore;
@@ -14,9 +11,12 @@ import android.widget.TextView;
 
 import com.litijun.photochooser.R;
 import com.litijun.photochooser.adapter.vo.AlbumItem;
-import com.litijun.photochooser.manager.ImageLoaderMgr;
+import com.litijun.photochooser.manager.PhotoChooseMgr;
 import com.litijun.photochooser.utils.DebugLog;
 import com.litijun.photochooser.utils.Utils;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class AlbumAdapter extends BaseAdapter {
 	private Context					context;
@@ -64,11 +64,12 @@ public class AlbumAdapter extends BaseAdapter {
 		}
 
 		if (albumMap != null) {
+			DebugLog.d("position = " + position);
 			AlbumItem albumItem = getItem(position);
 			holder.nameView.setText(albumItem.albumName);
 			holder.countView.setText(albumItem.imageCount + "张");
 			holder.currFlagView.setVisibility(albumItem.id == this.currAlumbId ? View.VISIBLE : View.GONE);
-			ImageLoaderMgr.getInstance(context).dispalyImage(albumItem.firstImagePath, holder.imageView);
+			PhotoChooseMgr.getInstance(context).dispalyImage(albumItem.firstImagePath, holder.imageView);
 		}
 		return convertView;
 	}

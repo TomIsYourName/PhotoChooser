@@ -20,12 +20,12 @@ import com.litijun.photochooser.adapter.vo.AlbumItem;
 import com.litijun.photochooser.adapter.vo.ImageItem;
 import com.litijun.photochooser.fragment.PreviewFragment;
 import com.litijun.photochooser.fragment.SelectAlbumFragment;
-import com.litijun.photochooser.manager.ImageLoaderMgr;
+import com.litijun.photochooser.manager.PhotoChooseMgr;
 import com.litijun.photochooser.utils.DebugLog;
 import com.litijun.photochooser.utils.LoadeImageConsts;
 import com.litijun.photochooser.utils.Utils;
 
-public class ChooseImageActivity extends FragmentActivity implements View.OnClickListener,LoaderManager.LoaderCallbacks<Cursor> {
+public class PhotoChooseActivity extends FragmentActivity implements View.OnClickListener,LoaderManager.LoaderCallbacks<Cursor> {
 	public static final String[]	LOADING_COLUMN	= { MediaStore.Images.ImageColumns._ID,//
 			MediaStore.Images.Media.DATA, //
 			MediaStore.Images.ImageColumns.DISPLAY_NAME,//
@@ -46,7 +46,7 @@ public class ChooseImageActivity extends FragmentActivity implements View.OnClic
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_choose_image);
-		ImageLoaderMgr.getInstance(getApplication()).setMaxSelectSize(6);
+		PhotoChooseMgr.getInstance(getApplication()).setMaxSelectSize(6);
 		gridView = (GridView) findViewById(R.id.choose_image_gridview);
 		adapter = new PictureAdapter(this);
 		albumFragment = (SelectAlbumFragment) getSupportFragmentManager().findFragmentById(R.id.choose_image_album);
@@ -55,13 +55,13 @@ public class ChooseImageActivity extends FragmentActivity implements View.OnClic
 		gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				if (position == 0 && ImageLoaderMgr.getInstance(getApplication()).isTakePhoto()) {
-					Toast.makeText(ChooseImageActivity.this, "拍照", Toast.LENGTH_LONG).show();
+				if (position == 0 && PhotoChooseMgr.getInstance(getApplication()).isTakePhoto()) {
+					Toast.makeText(PhotoChooseActivity.this, "拍照", Toast.LENGTH_LONG).show();
 				} else {
 					ImageItem item = adapter.getItem(position);
 					previewFragment = new PreviewFragment();
 					Bundle args = new Bundle();
-					args.putInt("offset", ImageLoaderMgr.getInstance(getApplication()).isTakePhoto() ? position - 1 : position);
+					args.putInt("offset", PhotoChooseMgr.getInstance(getApplication()).isTakePhoto() ? position - 1 : position);
 					args.putBoolean("show_all", true);
 					args.putSerializable("ImageItem", item);
 					previewFragment.setArguments(args);
@@ -78,9 +78,9 @@ public class ChooseImageActivity extends FragmentActivity implements View.OnClic
 	public void refreshGridViewByAlbumId(int id) {
 		DebugLog.d("album id = " + id);
 		if (id == LoadeImageConsts.LOADER_IMAGE_CURSOR) {
-			ImageLoaderMgr.getInstance(getApplication()).setTakePhoto(ImageLoaderMgr.getInstance(getApplication()).isTakePhoto());
+			PhotoChooseMgr.getInstance(getApplication()).setTakePhoto(PhotoChooseMgr.getInstance(getApplication()).isTakePhoto());
 		}else{
-			ImageLoaderMgr.getInstance(getApplication()).setTakePhoto(false);
+			PhotoChooseMgr.getInstance(getApplication()).setTakePhoto(false);
 		}
 		this.albumId = id;
 		getSupportLoaderManager().initLoader(id, null, this);
@@ -101,7 +101,7 @@ public class ChooseImageActivity extends FragmentActivity implements View.OnClic
 
 	public void changeSelectedCount(){
 
-		ImageLoaderMgr imageLoaderMgr = ImageLoaderMgr.getInstance(getApplication());
+		PhotoChooseMgr imageLoaderMgr = PhotoChooseMgr.getInstance(getApplication());
 		int selectedCount = imageLoaderMgr.getSelectCount();
 		if(selectedCount>0)
 			header_right_button.setText(getString(R.string.select_done, selectedCount, imageLoaderMgr.getMaxSelectSize()));
@@ -181,8 +181,8 @@ public class ChooseImageActivity extends FragmentActivity implements View.OnClic
 	}
 
 	public void showPreview() {
-		if(ImageLoaderMgr.getInstance(getApplication()).getSeletectList().size()<=0){
-			Toast.makeText(ChooseImageActivity.this, getString(R.string.have_no_chosen), Toast.LENGTH_LONG).show();
+		if(PhotoChooseMgr.getInstance(getApplication()).getSeletectList().size()<=0){
+			Toast.makeText(PhotoChooseActivity.this, getString(R.string.have_no_chosen), Toast.LENGTH_LONG).show();
 		}else{
 			previewFragment = new PreviewFragment();
 			showPreviewFragment(previewFragment);

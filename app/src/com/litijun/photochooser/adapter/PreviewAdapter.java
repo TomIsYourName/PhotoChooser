@@ -1,15 +1,18 @@
 package com.litijun.photochooser.adapter;
 
 import android.content.Context;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import com.litijun.photochooser.R;
 import com.litijun.photochooser.adapter.vo.ImageItem;
-import com.litijun.photochooser.manager.ImageLoaderMgr;
+import com.litijun.photochooser.fragment.PreviewFragment;
+import com.litijun.photochooser.manager.PhotoChooseMgr;
+import com.litijun.photochooser.widgets.photoview.PhotoView;
 
 import java.util.List;
 
@@ -18,12 +21,15 @@ import java.util.List;
  */
 public class PreviewAdapter extends PagerAdapter {
 
+	private Fragment 		fragment;
 	private Context			mContext;
 	private List<ImageItem>	data;
 	private int				offset	= 0;
+	
 
-	public PreviewAdapter(Context context, List<ImageItem> data, int offset) {
-		this.mContext = context;
+	public PreviewAdapter(Fragment fragment, List<ImageItem> data, int offset) {
+		this.mContext = fragment.getActivity();
+		this.fragment = fragment;
 		this.data = data;
 		this.offset = offset;
 	}
@@ -47,7 +53,7 @@ public class PreviewAdapter extends PagerAdapter {
 	public Object instantiateItem(ViewGroup container, int position) {
 		LayoutInflater inflater = LayoutInflater.from(mContext);
 		View view = inflater.inflate(R.layout.item_preview, null);
-		ImageView iv_preview = (ImageView) view.findViewById(R.id.iv_preview);
+		PhotoView iv_preview = (PhotoView) view.findViewById(R.id.iv_preview);
 
 		position = position + offset;
 		if (position < 0) {
@@ -57,10 +63,17 @@ public class PreviewAdapter extends PagerAdapter {
 			position = position % getCount();
 		}
 		String imgpath = getCount() > 0 ? data.get(position).realPath : "";
+		
+		iv_preview.setOnLongClickListener(new OnLongClickListener() {
+			
+			@Override
+			public boolean onLongClick(View v) {
+				((PreviewFragment)fragment).handleHearderOrBottom();
+				return true;
+			}
+		});
 
-
-
-		ImageLoaderMgr.getInstance(mContext).dispalyImage(imgpath, iv_preview);
+		PhotoChooseMgr.getInstance(mContext).dispalyImage(imgpath, iv_preview);
 		container.addView(view);
 		return view;
 	}

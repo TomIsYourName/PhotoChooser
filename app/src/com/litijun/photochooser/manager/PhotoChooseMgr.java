@@ -15,26 +15,26 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ImageLoaderMgr {
+public class PhotoChooseMgr {
 
-	private static volatile ImageLoaderMgr	instance;
+	private static volatile PhotoChooseMgr instance;
 	private Context							context;
 	private Map<Integer, ImageItem>         selectedItemMap;
 	private List<ImageItem>					allImageList;
 	private int								maxSelectSize;
 	private boolean							isTakePhoto;
 
-	private ImageLoaderMgr(Context context) {
+	private PhotoChooseMgr(Context context) {
 		this.context = context;
 		this.maxSelectSize = 0;
 		this.selectedItemMap = new HashMap<Integer, ImageItem>(maxSelectSize);
 		this.allImageList = new ArrayList<ImageItem>();
 	}
 
-	public static ImageLoaderMgr getInstance(Context context) {
-		synchronized(ImageLoaderMgr.class){
+	public static PhotoChooseMgr getInstance(Context context) {
+		synchronized(PhotoChooseMgr.class){
 			if (instance == null) {
-				instance = new ImageLoaderMgr(context);
+				instance = new PhotoChooseMgr(context);
 			}
 		}
 		return instance;
@@ -62,7 +62,7 @@ public class ImageLoaderMgr {
 
 	public List<ImageItem> getSeletectList() {
 		List<ImageItem> data = new ArrayList<ImageItem>();
-		Map<Integer, ImageItem> imageItemMap = ImageLoaderMgr.getInstance(context).getSelectedItemMap();
+		Map<Integer, ImageItem> imageItemMap = PhotoChooseMgr.getInstance(context).getSelectedItemMap();
 		DebugLog.v("SeletectList.size() = " + imageItemMap.size());
 		for (Map.Entry<Integer, ImageItem> entry : imageItemMap.entrySet()) {
 			Integer key = entry.getKey();
