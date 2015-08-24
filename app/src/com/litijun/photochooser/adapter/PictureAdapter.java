@@ -1,8 +1,10 @@
 package com.litijun.photochooser.adapter;
 
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +22,12 @@ import com.litijun.photochooser.adapter.vo.ImageItem;
 import com.litijun.photochooser.manager.PhotoChooseMgr;
 import com.litijun.photochooser.utils.DebugLog;
 import com.litijun.photochooser.utils.Utils;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
+import com.nostra13.universalimageloader.core.download.ImageDownloader;
+import com.nostra13.universalimageloader.core.imageaware.ImageAware;
+import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
 
 public class PictureAdapter extends BaseAdapter {
 	private int							itemSize;
@@ -28,10 +36,13 @@ public class PictureAdapter extends BaseAdapter {
 	private Context						context;
 	private RelativeLayout.LayoutParams	params;
 	private PhotoChooseMgr loaderManager;
+	private ContentResolver resolver;
+	private DisplayImageOptions displayOptions;
 
 	public PictureAdapter(Activity activity) {
 		inflater = activity.getLayoutInflater();
 		context = activity;
+		resolver = context.getContentResolver();
 		loaderManager = PhotoChooseMgr.getInstance(context);
 
 		// 计算每个项的高度：高度=宽度
@@ -60,6 +71,16 @@ public class PictureAdapter extends BaseAdapter {
 				((PhotoChooseActivity)context).changeSelectedCount();
 			}
 		};
+
+		displayOptions = new DisplayImageOptions.Builder()
+				.showImageOnLoading(R.drawable.image_loading_default)
+				.showImageOnFail(R.drawable.image_loading_default)
+				.imageScaleType(ImageScaleType.EXACTLY)
+				.cacheInMemory(true)
+				.cacheOnDisk(false)
+				.considerExifParams(true)
+				.bitmapConfig(Bitmap.Config.RGB_565)
+				.build();
 	}
 
 	@Override
@@ -121,7 +142,10 @@ public class PictureAdapter extends BaseAdapter {
 				holder.textView.setText(item.name);
 				holder.checkBox.setChecked(loaderManager.getImageItem(item.id) != null && loaderManager.getSelectCount() <= loaderManager.getMaxSelectSize());
 				holder.checkBox.setVisibility(View.VISIBLE);
-				PhotoChooseMgr.getInstance(context).dispalyImage(item.realPath, holder.imageView);
+//				PhotoChooseMgr.getInstance(context).dispalyImage(item.realPath, holder.imageView);
+				ImageAware imageAware = new ImageViewAware(holder.imageView, false);
+				ImageLoader.getInstance().displayImage(resolver, ImageDownloader.Scheme.FILE.wrap(item.realPath), item.id, imageAware, displayOptions);
+
 			}
 		}
 		return convertView;

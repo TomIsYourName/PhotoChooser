@@ -3,7 +3,7 @@ package com.litijun.photochooser.utils;
 import android.content.Context;
 import android.graphics.Bitmap;
 
-import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
+import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiskCache;
 import com.nostra13.universalimageloader.cache.disc.naming.HashCodeFileNameGenerator;
 import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -43,7 +43,7 @@ public class ImageLoaderUtil {
 	        .memoryCache(new LruMemoryCache(15 * 1024 * 1024))
 	        .memoryCacheSize(20 * 1024 * 1024)
 	        .memoryCacheSizePercentage(13) // default
-	        .diskCache(new UnlimitedDiscCache(FileMgr.getInstance(context).createFileDir("imgCache"))) 
+	        .diskCache(new UnlimitedDiskCache(FileMgr.getInstance(context).createFileDir("imgCache")))
 	        .diskCacheFileNameGenerator(new HashCodeFileNameGenerator()) // default
 	        .imageDownloader(new BaseImageDownloader(context)) // default
 	        .writeDebugLogs()
@@ -79,7 +79,7 @@ public class ImageLoaderUtil {
 			.resetViewBeforeLoading(true)//
 			.cacheOnDisk(true)//
 			.cacheInMemory(true)//
-			.imageScaleType(ImageScaleType.EXACTLY_STRETCHED)//
+			.imageScaleType(ImageScaleType.EXACTLY)//
 			.bitmapConfig(Bitmap.Config.RGB_565)//
 			.considerExifParams(true)//
 			.displayer(new RoundedBitmapDisplayer((int)(roundDIP * density)))//
