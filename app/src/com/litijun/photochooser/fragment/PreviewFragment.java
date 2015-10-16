@@ -1,8 +1,5 @@
 package com.litijun.photochooser.fragment;
 
-import java.lang.reflect.Field;
-import java.util.List;
-
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
@@ -23,8 +20,11 @@ import com.litijun.photochooser.adapter.PreviewAdapter;
 import com.litijun.photochooser.adapter.vo.ImageItem;
 import com.litijun.photochooser.manager.PhotoChooseMgr;
 import com.litijun.photochooser.utils.DebugLog;
-import com.litijun.photochooser.widgets.DepthPageTransformer;
 import com.litijun.photochooser.widgets.FixedScroller;
+import com.litijun.photochooser.widgets.ParallaxPageTransformer;
+
+import java.lang.reflect.Field;
+import java.util.List;
 
 public class PreviewFragment extends Fragment implements View.OnClickListener, ViewPager.OnPageChangeListener {
 
@@ -32,7 +32,7 @@ public class PreviewFragment extends Fragment implements View.OnClickListener, V
     private CheckBox				preview_image_cb;
     private Button					header_right_button;
     private Button					header_back;
-    private RelativeLayout preview_image_header;
+    private RelativeLayout          preview_image_header;
     private RelativeLayout			preview_image_bottom;
     private List<ImageItem>			data					= null;
 
@@ -170,7 +170,8 @@ public class PreviewFragment extends Fragment implements View.OnClickListener, V
         }
 
         //vp_preview.setPageTransformer(true, new ZoomOutPageTransformer());
-        vp_preview.setPageTransformer(true, new DepthPageTransformer());
+        //vp_preview.setPageTransformer(true, new DepthPageTransformer());
+        vp_preview.setPageTransformer(true, new ParallaxPageTransformer());
 
     }
 
